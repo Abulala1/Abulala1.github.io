@@ -12,7 +12,6 @@
 
     
     <title>
-        Tag: C++ |
         
         Abula&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,11 +22,15 @@
     
 <link rel="stylesheet" href="/css/loader.css">
 
-    <meta property="og:type" content="website">
+    <meta name="description" content="SQL语法连接数据库12mysql -u root -p password:root  1234567891011Welcome to the MySQL monitor.  Commands end with ; or \g.Your MySQL connection id is 5Server version: 5.7.26 MySQL Community Server (GPL)Copyri">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Abula&#39;s Blog">
-<meta property="og:url" content="http://abulala1.github.io/tags/C/index.html">
+<meta property="og:url" content="http://abulala1.github.io/2023/12/12/SQL%E8%AF%AD%E6%B3%95/index.html">
 <meta property="og:site_name" content="Abula&#39;s Blog">
+<meta property="og:description" content="SQL语法连接数据库12mysql -u root -p password:root  1234567891011Welcome to the MySQL monitor.  Commands end with ; or \g.Your MySQL connection id is 5Server version: 5.7.26 MySQL Community Server (GPL)Copyri">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-12-12T12:05:09.728Z">
+<meta property="article:modified_time" content="2023-12-12T12:04:34.636Z">
 <meta property="article:author" content="Abula">
 <meta name="twitter:card" content="summary">
     
@@ -112,16 +115,12 @@
                 
                     
                     
-                        <a href="/" id="logo"><h1>Tags</h1></a>
+                        <a href="/" id="logo"><h1>Abula&#39;s Blog</h1></a>
                     
                 
             </div>
             
                 
-                
-                    <h2 id="subtitle-wrap">
-                        <a href="/" id="subtitle">C++</a>
-                    </h2>
                 
             
         </div>
@@ -155,54 +154,118 @@
 </header>
 
             <div id="content" class="outer">
-                <section id="main">
-    <div class="archives-outer-wrap wow fadeInUp">
-        <div class="tag-wrap">
-            
-                <div class="archives-tag-list-item">
-                    <a class="archives-tag-list-link" href="/tags/C/">C++</a>
-                </div>
-            
-        </div>
-        <div class="category-wrap">
-            
-        </div>
-        
-        
-            
-            
-                
-    
-    <section class="archives-wrap wow fadeInUp">
-        <div class="archive-year-wrap">
-            <a href="/archives/2023" class="archive-year">2023</a>
-        </div>
-        <div class="archives">
-            <ul>
-                
-                <li class="archive-article">
-    <div class="archive-article-date-wrap">
-        <a href="/2023/12/07/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-            <time class="dt-published" datetime="2023-12-07T15:06:11.000Z"
-                  itemprop="datePublished">12-07</time>
-        </a>
-    </div>
-    <div class="archive-article-title-wrap">
-        
-            
-                <a class="archive-article-title" href="/2023/12/07/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">C++学习笔记</a>
-            
-        
-    </div>
-</li>
+                <section id="main"><article id="post-SQL语法" class="h-entry article article-type-post"
+         itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <div class="article-inner">
+        <div class="article-meta">
+            <div class="article-date wow slideInLeft">
+    <a href="/2023/12/12/SQL%E8%AF%AD%E6%B3%95/" class="article-date-link">
+        <time datetime="2023-12-12T12:05:09.728Z"
+              itemprop="datePublished">2023-12-12</time>
+    </a>
+</div>
 
-                
-                
-            </ul>
+            
+
         </div>
-    </section>
-    
+        <div class="hr-line"></div>
+        
+
+        <div class="e-content article-entry" itemprop="articleBody">
+            
+                <h1 id="SQL语法"><a href="#SQL语法" class="headerlink" title="SQL语法"></a>SQL语法</h1><h3 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p </span><br><span class="line">password:root</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 5</span><br><span class="line">Server version: 5.7.26 MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &#x27;help;&#x27; or &#x27;\h&#x27; for help. Type &#x27;\c&#x27; to clear the current input statement.</span><br></pre></td></tr></table></figure>
+
+<h3 id="三类SQL语法"><a href="#三类SQL语法" class="headerlink" title="三类SQL语法"></a>三类SQL语法</h3><ul>
+<li>DDL（数据库定义语言）：创建、删除或修改数据库以及数据库中的表等对象</li>
+<li>DML（数据库操作语言）：查询或修改表中的记录</li>
+<li>DCL（数据库控制语言）：确认或取消对数据库中的数据变更的执行操作，以及对用户的操作数据库中的<br>对象权限进行设定。</li>
+</ul>
+<h4 id="1-DDL"><a href="#1-DDL" class="headerlink" title="1.DDL"></a>1.DDL</h4><p>创建数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">create database database_name;</span><br><span class="line"></span><br><span class="line">eg：</span><br><span class="line">create database test;</span><br></pre></td></tr></table></figure>
+
+<p>[^选择数据库]: use database_name;</p>
+<p>创建数据表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">create table table_name (</span><br><span class="line">    column1 datatype1,</span><br><span class="line">    column2 datatype2,</span><br><span class="line">    ...</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">eg ：</span><br><span class="line">create table test1(id int(20),name varchar(255));</span><br></pre></td></tr></table></figure>
+
+<p>删除数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">drop database database_name;</span><br><span class="line"></span><br><span class="line">eg：</span><br><span class="line">drop database test;</span><br></pre></td></tr></table></figure>
+
+<p>删除数据表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">drop table table_name;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">drop table test1;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-DML"><a href="#2-DML" class="headerlink" title="2.DML"></a>2.DML</h4><p>查询所有数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select * from table_name;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">select * from test1;</span><br></pre></td></tr></table></figure>
+
+<p>查询特定数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select column1, column2, ... from table_name;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">select * from test1 where id=1;</span><br></pre></td></tr></table></figure>
+
+<p>插入数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">insert table_name (column1, column2, ...) values(value1, value2, ...);</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">insert test1 values(1,&#x27;aaa&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>更新数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">update table_name SET column1 = value1, column2 = value2, ... where condition;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">update test1 set id=4,name=&#x27;aaa&#x27; where id=3;</span><br></pre></td></tr></table></figure>
+
+<p>删除数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">delete from table_name where condition;</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">delete from test1 where id=1;</span><br></pre></td></tr></table></figure>
+
+<p>排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select * from table_name order by column_name ASC|DESC;</span><br><span class="line"></span><br><span class="line">eg：</span><br><span class="line">select * from test1 order by id;</span><br></pre></td></tr></table></figure>
+
+
+            
+        </div>
+        <footer class="article-footer">
+            <a data-url="http://abulala1.github.io/2023/12/12/SQL%E8%AF%AD%E6%B3%95/" data-id="clq2apzbx0000mouqcpau01yt" data-title=""
+               class="article-share-link">Share</a>
+            
+            
+                <a href="/2023/12/12/SQL%E8%AF%AD%E6%B3%95/#comments" class="article-comment-link">
+                    <span class="post-comments-count waline-comment-count" data-path="/2023/12/12/SQL%E8%AF%AD%E6%B3%95/"
+                          itemprop="commentCount"></span>
+                    Comments
+                </a>
+            
+            
+            
+
+        </footer>
     </div>
+    
+        
+    <nav id="article-nav" class="wow fadeInUp">
+        
+        
+            <div class="article-nav-link-wrap article-nav-link-right">
+                
+                    <img data-src="https://i.imgs.ovh/2023/12/12/mMXcm.png" data-sizes="auto" alt="C++学习笔记"
+                         class="lazyload">
+                
+                <a href="/2023/12/07/C-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"></a>
+                <div class="article-nav-caption">Older</div>
+                <h3 class="article-nav-title">
+                    
+                        C++学习笔记
+                    
+                </h3>
+            </div>
+        
+    </nav>
+
+
+    
+</article>
+
+
+
+
+     <div id="comments" class="wcomment"></div>
+
+
+
+
+
 
 
 
