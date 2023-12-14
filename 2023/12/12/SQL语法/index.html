@@ -31,7 +31,7 @@
 <meta property="og:description" content="SQL语法连接数据库12mysql -u root -p password:root  1234567891011Welcome to the MySQL monitor.  Commands end with ; or \g.Your MySQL connection id is 5Server version: 5.7.26 MySQL Community Server (GPL)Copyri">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-12-12T12:26:06.000Z">
-<meta property="article:modified_time" content="2023-12-12T15:30:56.067Z">
+<meta property="article:modified_time" content="2023-12-14T01:07:45.123Z">
 <meta property="article:author" content="Abula">
 <meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
@@ -214,6 +214,9 @@
 
 <p>排序</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select * from table_name order by column_name ASC|DESC;</span><br><span class="line"></span><br><span class="line">eg：</span><br><span class="line">select * from test1 order by id;</span><br></pre></td></tr></table></figure>
+
+<p>联合查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> table_name <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,<span class="number">2</span></span><br></pre></td></tr></table></figure>
 
 
             
