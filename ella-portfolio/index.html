@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ella — Data Science Portfolio</title>
+  <meta name="description" content="Personal portfolio of Ella — data science, AI reliability, and product analytics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Navigation (same on every page) ===== -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">ELLA</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">menu</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <header class="hero">
+    <!-- decorative scatter dots -->
+    <span class="dot dot--coral" style="top: 18%; left: 12%;"></span>
+    <span class="dot dot--blue"  style="top: 30%; right: 14%;"></span>
+    <span class="dot dot--paper" style="bottom: 26%; left: 20%;"></span>
+    <span class="dot dot--blue"  style="bottom: 18%; right: 22%;"></span>
+
+    <p class="eyebrow">hello, world — 你好</p>
+    <h1 class="hero-name">ELLA</h1>
+    <p class="hero-sub">I turn messy data into decisions people can trust.<br />
+      Data science student · AI reliability enthusiast · builder.</p>
+
+    <!-- Draggable chips: try picking them up! -->
+    <div class="chips" aria-label="Things I do (draggable for fun)">
+      <span class="chip">[ Data Scientist ]</span>
+      <span class="chip">[ AI Reliability ]</span>
+      <span class="chip">[ Product Analytics ]</span>
+      <span class="chip">[ 中文 / EN ]</span>
+    </div>
+
+    <a class="btn" href="projects.html">See my work</a>
+    <p class="scroll-cue" style="margin-top: 3rem;">↓ scroll down ↓</p>
+  </header>
+
+  <!-- ===== Teaser section ===== -->
+  <section class="section wrap">
+    <div class="reveal">
+      <p class="eyebrow">// currently</p>
+      <h2>Let's make data make sense.</h2>
+      <p style="max-width: 40rem;">
+        I'm studying Data Science at UC Berkeley and interning on AI products —
+        from multi-agent platforms to privacy-first analytics tools. I care about
+        one question: <strong>can we trust what the model just said?</strong>
+      </p>
+      <div class="contact-links">
+        <a class="btn btn--ghost" href="about.html">More about me</a>
+        <a class="btn btn--ghost" href="contact.html">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer (same on every page) ===== -->
+  <footer>
+    <div class="social">
+      <!-- PLACEHOLDER: replace with your real links -->
+      <a href="mailto:hello@example.com">Email</a> |
+      <a href="https://www.linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a> |
+      <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    © 2026 ELLA — built with HTML, CSS &amp; vanilla JS
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
