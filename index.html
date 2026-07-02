@@ -42,13 +42,32 @@
             <div class="badge-face badge-front">
               <div class="badge-topbar mono">DATA·SCI // VISITOR PASS</div>
               <div class="badge-photo">
-                <!-- PLACEHOLDER: replace with <img src="assets/your-photo.jpg" alt="Ella"> -->
-                <svg viewBox="0 0 100 100" class="badge-avatar" aria-hidden="true">
-                  <circle cx="50" cy="42" r="22" fill="none" stroke="currentColor" stroke-width="4"/>
-                  <path d="M18 96 Q50 62 82 96" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="42" cy="40" r="3" fill="currentColor"/>
-                  <circle cx="58" cy="40" r="3" fill="currentColor"/>
-                  <path d="M43 50 Q50 56 57 50" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <!-- PLACEHOLDER: replace with <img src="assets/your-photo.jpg" alt="Ella">
+                     if you'd rather show a real photo -->
+                <svg viewBox="0 0 126 118" class="badge-avatar badge-char" aria-hidden="true">
+                  <!-- hair spikes -->
+                  <path d="M46 26 L42 12 M60 22 L60 6 M74 26 L79 12" class="cink"/>
+                  <!-- head -->
+                  <circle cx="60" cy="52" r="27" class="cink"/>
+                  <!-- glasses -->
+                  <circle cx="50" cy="50" r="8" class="cink"/>
+                  <circle cx="71" cy="50" r="8" class="cink"/>
+                  <path d="M58 50 L63 50" class="cink"/>
+                  <g class="char-eyes">
+                    <circle cx="50" cy="50" r="2.2" fill="var(--ink)"/>
+                    <circle cx="71" cy="50" r="2.2" fill="var(--ink)"/>
+                  </g>
+                  <!-- smile -->
+                  <path d="M52 63 Q60 70 69 63" class="cink"/>
+                  <!-- shoulders -->
+                  <path d="M34 112 Q38 88 60 86 Q82 88 86 112" class="cink"/>
+                  <!-- waving arm -->
+                  <g class="char-arm">
+                    <path d="M84 94 Q100 82 104 64" class="cink"/>
+                    <circle cx="105" cy="58" r="6" class="cink"/>
+                  </g>
+                  <!-- motion lines -->
+                  <path d="M112 48 L118 42 M114 60 L121 58" class="cink char-lines"/>
                 </svg>
               </div>
               <p class="badge-name">ELLA</p>
@@ -63,7 +82,7 @@
                 <li><span>BASE</span> Berkeley, CA</li>
                 <li><span>MAJOR</span> Data Science</li>
                 <li><span>FOCUS</span> AI Reliability</li>
-                <li><span>LANG</span> 中文 / EN</li>
+                <li><span>LANG</span> CN / EN</li>
                 <li><span>STATUS</span> open to collab ✅</li>
               </ul>
               <a class="btn badge-btn" href="contact.html">Say hi →</a>
@@ -72,7 +91,7 @@
           </div>
         </div>
       </div>
-      <p class="badge-hint mono">↖ drag me · click to flip　拖一拖 · 点一下翻面</p>
+      <p class="badge-hint mono">↖ drag me · click to flip</p>
     </div>
 
     <!-- ---- Right: typewriter + boiling name + waving doodle ---- -->
@@ -82,34 +101,6 @@
       <h1 class="hero-name" aria-label="ELLA">
         <span class="boil">E</span><span class="boil">L</span><span class="boil">L</span><span class="boil">A</span>
       </h1>
-
-      <!-- waving doodle character -->
-      <svg class="doodle" viewBox="0 0 220 210" aria-hidden="true">
-        <!-- hair spikes -->
-        <path d="M88 32 L84 16 M104 28 L104 10 M120 32 L126 16" class="ink"/>
-        <!-- head -->
-        <circle cx="104" cy="62" r="34" class="ink"/>
-        <!-- glasses -->
-        <circle cx="92" cy="60" r="10" class="ink"/>
-        <circle cx="118" cy="60" r="10" class="ink"/>
-        <path d="M102 60 L108 60" class="ink"/>
-        <circle cx="92" cy="60" r="2.5" fill="var(--ink)"/>
-        <circle cx="118" cy="60" r="2.5" fill="var(--ink)"/>
-        <!-- smile -->
-        <path d="M96 76 Q104 84 114 76" class="ink"/>
-        <!-- body -->
-        <path d="M104 96 L104 150" class="ink"/>
-        <path d="M104 150 Q84 176 74 196 M104 150 Q124 176 134 196" class="ink"/>
-        <!-- left arm (resting) -->
-        <path d="M104 112 Q80 128 66 146" class="ink"/>
-        <!-- right arm (waving) -->
-        <g class="wave-arm">
-          <path d="M104 112 Q136 100 150 72" class="ink"/>
-          <circle cx="152" cy="66" r="8" class="ink"/>
-        </g>
-        <!-- motion lines near the hand -->
-        <path d="M168 52 L178 44 M172 66 L184 62" class="ink wave-lines"/>
-      </svg>
 
       <p class="hero-sub">I turn messy data into decisions people can trust.</p>
       <div class="hero-cta">

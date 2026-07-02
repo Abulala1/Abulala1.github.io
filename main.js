@@ -41,7 +41,7 @@ const roles = [
   "a Data Scientist",
   "an AI Reliability Nerd",
   "a Builder 🛠",
-  "双语的 · Bilingual",
+  "Bilingual (CN / EN)",
 ];
 
 if (typed) {
