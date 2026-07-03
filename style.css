@@ -672,18 +672,18 @@ a.card h3::after {
    starts a text selection */
 .no-select, .no-select * { user-select: none !important; }
 
-/* ---------- Interactive PCB skill lab (about page) ---------- */
+/* ---------- Interactive DE10-style skill board (about page) ---------- */
 .pcb-lab { display: flex; flex-direction: column; gap: 1rem; }
 
 .pcb-board {
   position: relative;
   width: 100%;
   max-width: 380px;
-  height: 460px;
+  height: 560px;
   background:
-    radial-gradient(rgba(255, 255, 255, 0.16) 1.6px, transparent 1.6px),
-    #232951;                                  /* dark PCB substrate */
-  background-size: 22px 22px;
+    radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px),
+    #2456a8;                                  /* DE10 blue substrate */
+  background-size: 20px 20px;
   border: 3px solid var(--ink);
   border-radius: var(--radius);
   box-shadow: 6px 6px 0 var(--ink);
@@ -691,76 +691,182 @@ a.card h3::after {
   --fx: 0px; --fy: 120px; --rot: 0deg;
 }
 
-/* the big CPU in the middle */
-.mega-chip {
+/* --- top I/O ports --- */
+.ports {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 150px;
-  min-height: 100px;
-  background: var(--ink);
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-radius: 8px;
+  top: 8px; left: 14px; right: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.port { display: block; border: 2px solid #0f1c33; }
+.port-audio { width: 16px; height: 16px; border-radius: 50%; }
+.port-audio.pink  { background: #f082b0; }
+.port-audio.blue  { background: #6aa5f8; }
+.port-audio.green { background: #5ad07a; }
+.port-vga { width: 40px; height: 16px; border-radius: 4px; background: #3b82f6; margin-left: auto; }
+.port-usb { width: 28px; height: 14px; border-radius: 2px; background: #d7dee9; }
+.port-eth { width: 30px; height: 18px; border-radius: 3px; background: #c3ccd9; }
+
+/* --- LCD screen: shows the computed title --- */
+.lcd {
+  position: absolute;
+  top: 40px; left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  min-height: 82px;
+  background: #cfe3b8;                       /* classic LCD green */
+  border: 3px solid #0f1c33;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 3px rgba(15, 28, 51, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  padding: 0.6rem;
+  gap: 4px;
+  padding: 8px;
   text-align: center;
   z-index: 2;
 }
-/* CPU "pins" */
-.mega-chip::before, .mega-chip::after {
-  content: "";
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  height: 8px;
-  background: repeating-linear-gradient(90deg,
-    rgba(255,255,255,0.6) 0 4px, transparent 4px 12px);
-}
-.mega-chip::before { top: -10px; }
-.mega-chip::after { bottom: -10px; }
 
 .mega-title {
-  font-family: "Archivo Black", sans-serif;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 700;
   font-size: 0.95rem;
-  color: var(--coral);
-  line-height: 1.25;
+  letter-spacing: 0.04em;
+  color: #22381c;                            /* dark LCD ink */
+  line-height: 1.3;
 }
 .mega-title.flash { animation: title-flash 0.45s steps(2); }
 @keyframes title-flash {
-  0% { color: #fff; transform: scale(1.12); }
-  100% { color: var(--coral); transform: scale(1); }
+  0% { color: #0a140a; transform: scale(1.1); }
+  100% { color: #22381c; transform: scale(1); }
 }
-.mega-sub { font-size: 0.65rem; color: rgba(255, 255, 255, 0.7); }
+.mega-sub { font-size: 0.62rem; color: #4a6141; }
 
-/* sockets — dashed landing pads around the CPU */
-.socket {
+/* --- decorative center FPGA --- */
+.fpga-deco {
   position: absolute;
-  width: 96px;
-  height: 96px;
-  border: 2px dashed rgba(255, 255, 255, 0.45);
+  left: 50%; top: 252px;
+  transform: translateX(-50%);
+  width: 104px; height: 104px;
+  background: #12182e;
+  border: 2px solid #3d4b78;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  color: #8fa3e8;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+/* FPGA pins */
+.fpga-deco::before, .fpga-deco::after {
+  content: "";
+  position: absolute;
+  left: 6px; right: 6px;
+  height: 7px;
+  background: repeating-linear-gradient(90deg,
+    rgba(255, 255, 255, 0.5) 0 3px, transparent 3px 9px);
+}
+.fpga-deco::before { top: -9px; }
+.fpga-deco::after { bottom: -9px; }
+
+/* --- gold GPIO headers on the edges --- */
+.gpio {
+  position: absolute;
+  top: 140px;
+  height: 316px;
+  width: 7px;
+  background: repeating-linear-gradient(180deg, #e7c56a 0 5px, #8a6a1f 5px 9px);
+  border: 1px solid #0f1c33;
+}
+.gpio-left { left: 3px; }
+.gpio-right { right: 3px; }
+
+/* --- sockets: 2 columns × 3 rows around the FPGA --- */
+.socket {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.socket.hot {                    /* highlighted while an IC hovers over it */
+.socket.hot {
   border-color: var(--coral);
-  background: rgba(255, 106, 92, 0.12);
+  background: rgba(255, 106, 92, 0.15);
 }
-.socket[data-socket="1"] { left: 4%;  top: 3%; }
-.socket[data-socket="2"] { right: 4%; top: 3%; }
-.socket[data-socket="3"] { left: 4%;  top: 50%; transform: translateY(-50%); }
-.socket[data-socket="4"] { right: 4%; top: 50%; transform: translateY(-50%); }
-.socket[data-socket="5"] { left: 4%;  bottom: 3%; }
-.socket[data-socket="6"] { right: 4%; bottom: 3%; }
+.socket[data-socket="1"] { left: 4%;  top: 140px; }
+.socket[data-socket="2"] { right: 4%; top: 140px; }
+.socket[data-socket="3"] { left: 4%;  top: 252px; }
+.socket[data-socket="4"] { right: 4%; top: 252px; }
+.socket[data-socket="5"] { left: 4%;  top: 364px; }
+.socket[data-socket="6"] { right: 4%; top: 364px; }
 
-/* the parts tray */
+/* --- bottom row hardware --- */
+.silk {
+  position: absolute;
+  right: 16px; bottom: 70px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+}
+.segs {
+  position: absolute;
+  left: 14px; bottom: 58px;
+  display: flex;
+  gap: 5px;
+}
+.seg {
+  width: 24px; height: 38px;
+  background: #111;
+  border: 2px solid #0f1c33;
+  border-radius: 4px;
+  color: #ff5040;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.switches {
+  position: absolute;
+  left: 14px; bottom: 12px;
+  display: flex;
+  gap: 7px;
+}
+.sw {
+  width: 12px; height: 32px;
+  background: #0f1c33;
+  border-radius: 3px;
+  position: relative;
+}
+.sw::after {
+  content: "";
+  position: absolute;
+  left: 2px; top: 3px;
+  width: 8px; height: 12px;
+  background: #e8edf5;
+  border-radius: 2px;
+}
+.sw.down::after { top: auto; bottom: 3px; }
+.pbtns {
+  position: absolute;
+  right: 14px; bottom: 16px;
+  display: flex;
+  gap: 9px;
+}
+.pbtn {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #141a30;
+  border: 3px solid #33406b;
+}
+
+/* --- parts tray --- */
 .ic-tray {
   min-height: 96px;
   border: 2px solid var(--ink);
@@ -776,10 +882,10 @@ a.card h3::after {
   --fx: 0px; --fy: 120px; --rot: 0deg;
 }
 
-/* skill ICs — four shapes */
+/* --- skill ICs: horizontal shapes only --- */
 .ic {
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   font-weight: 500;
   color: #fff;
   background: var(--ink);
@@ -793,18 +899,17 @@ a.card h3::after {
   cursor: grab;
   touch-action: none;
   user-select: none;
-  padding: 2px;
+  padding: 2px 4px;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
 }
 .ic:active { cursor: grabbing; }
 .ic.dragging { opacity: 0.92; z-index: 100; box-shadow: 6px 8px 0 rgba(0,0,0,0.3); }
 
-.ic--h  { width: 88px; height: 32px; }                       /* wide DIP */
-.ic--v  { width: 32px; height: 88px; writing-mode: vertical-rl; } /* vertical */
-.ic--sq { width: 58px; height: 58px; }                       /* square QFP */
-.ic--s  { width: 66px; height: 40px; }                       /* small rect */
+.ic--h  { width: 88px; height: 32px; }   /* wide DIP */
+.ic--sq { width: 58px; height: 58px; }   /* square QFP */
+.ic--s  { width: 68px; height: 42px; }   /* small rectangle */
 
-/* category accent stripe on each IC */
+/* category accent stripe */
 .ic[data-cat="HW"]    { border-bottom-color: var(--coral); }
 .ic[data-cat="SW"]    { border-bottom-color: #17a34a; }
 .ic[data-cat="CLOUD"] { border-bottom-color: #f59e0b; }
@@ -816,6 +921,15 @@ a.card h3::after {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* labels for the grouped toolbox lists */
+.skill-label {
+  font-size: 0.72rem;
+  color: var(--blue);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 1rem 0 0.35rem;
 }
 
 @keyframes fly-in {

@@ -416,20 +416,24 @@ const chipSub = document.getElementById("chipSub");
 
 if (pcbBoard && icTray && chipTitle) {
   /* PLACEHOLDER: edit labels/categories/shapes freely.
-     shapes: h = wide, v = vertical, sq = square, s = small rect */
+     shapes (all horizontal-readable): h = wide, sq = square, s = small rect */
   const SKILLS = [
-    { label: "VERILOG",  cat: "HW",    shape: "h"  },
-    { label: "VHDL",     cat: "HW",    shape: "v"  },
-    { label: "FPGA",     cat: "HW",    shape: "sq" },
-    { label: "PCB",      cat: "HW",    shape: "s"  },
-    { label: "PYTHON",   cat: "SW",    shape: "h"  },
-    { label: "C/C++",    cat: "SW",    shape: "s"  },
-    { label: "REACT",    cat: "SW",    shape: "sq" },
-    { label: "AWS",      cat: "CLOUD", shape: "s"  },
-    { label: "DOCKER",   cat: "CLOUD", shape: "v"  },
-    { label: "ESP32",    cat: "EMB",   shape: "sq" },
-    { label: "FreeRTOS", cat: "EMB",   shape: "h"  },
-    { label: "RISC-V",   cat: "EMB",   shape: "v"  },
+    { label: "VERILOG",   cat: "HW",    shape: "h"  },
+    { label: "VHDL",      cat: "HW",    shape: "s"  },
+    { label: "PCB",       cat: "HW",    shape: "sq" },
+    { label: "RF",        cat: "HW",    shape: "s"  },
+    { label: "PYTHON",    cat: "SW",    shape: "h"  },
+    { label: "C/C++",     cat: "SW",    shape: "s"  },
+    { label: "JAVA",      cat: "SW",    shape: "sq" },
+    { label: "REACT",     cat: "SW",    shape: "s"  },
+    { label: "SQL",       cat: "SW",    shape: "sq" },
+    { label: "AWS",       cat: "CLOUD", shape: "s"  },
+    { label: "DOCKER",    cat: "CLOUD", shape: "h"  },
+    { label: "SNOWFLAKE", cat: "CLOUD", shape: "h"  },
+    { label: "ESP32",     cat: "EMB",   shape: "sq" },
+    { label: "FreeRTOS",  cat: "EMB",   shape: "h"  },
+    { label: "SPI·I2C",   cat: "EMB",   shape: "s"  },
+    { label: "EDGE AI",   cat: "EMB",   shape: "sq" },
   ];
 
   const sockets = [...pcbBoard.querySelectorAll(".socket")];
