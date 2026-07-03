@@ -364,16 +364,17 @@ footer .social a { margin: 0 0.5rem; }
 
 .hero-split {
   display: grid;
-  grid-template-columns: minmax(280px, 400px) 1fr;
+  grid-template-columns: 1fr minmax(280px, 400px);  /* text LEFT, card RIGHT */
   gap: 3rem;
   align-items: start;
-  justify-content: start;   /* pin content to the LEFT, not center */
   text-align: left;
   max-width: var(--maxw);
   margin: 0 auto;
   width: 100%;
   padding: 0 1.25rem 3rem;
 }
+
+.hero-split .lanyard { justify-self: end; }
 
 /* ---------- Lanyard + badge ---------- */
 .lanyard {
@@ -623,6 +624,47 @@ footer .social a { margin: 0 0.5rem; }
 }
 
 .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.5rem 0 2rem; }
+
+/* ---------- Drawing layer ---------- */
+/* z-index -1 places the canvas above the body's grid background
+   but below all normal content, so text and buttons stay usable. */
+#drawCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.draw-ui {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--blue);
+}
+.draw-ui button {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.8rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.draw-ui button:hover { box-shadow: 3px 3px 0 var(--coral); }
+
+/* ---------- Clickable project cards ---------- */
+a.card { color: inherit; }
+a.card:hover { text-decoration: none; }
+a.card h3::after {
+  content: " ↗";
+  color: var(--blue);
+  font-size: 0.8em;
+}
 
 /* ---------- Responsive hero ---------- */
 @media (max-width: 820px) {

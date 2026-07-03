@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects — Ella</title>
+  <title>Projects — Alex</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -11,9 +11,15 @@
 </head>
 <body>
 
+  <canvas id="drawCanvas" aria-hidden="true"></canvas>
+  <div class="draw-ui mono">
+    <span>✏ draw anywhere</span>
+    <button id="clearDraw" type="button">clear</button>
+  </div>
+
   <nav class="nav">
     <div class="nav-inner">
-      <a class="nav-logo" href="index.html">ELLA</a>
+      <a class="nav-logo" href="index.html">ALEX</a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">menu</button>
       <ul class="nav-links" id="nav-links">
         <li><a href="index.html">Home</a></li>
@@ -28,49 +34,66 @@
     <p class="eyebrow">// selected work</p>
     <h2>Projects</h2>
     <p style="max-width: 40rem; margin-bottom: 2.5rem;">
-      A few things I've built or shipped. <span class="mono">(Placeholder content —
-      swap in your real projects.)</span>
+      Hardware, firmware, and the occasional hackathon trophy.
+      <span class="mono">Click any card to open the repo ↗</span>
     </p>
 
     <div class="grid">
-      <!-- PLACEHOLDER PROJECT 1 -->
-      <article class="card reveal">
-        <p class="eyebrow">01 · internship</p>
-        <h3>Multi-Agent Platform i18n</h3>
-        <p>Internationalized a multi-agent AI SaaS marketing calendar across
-           7 languages (67 translation keys), shipped via a reviewed PR on a
-           production codebase.</p>
-        <div class="tags"><span>React</span><span>i18n</span><span>Claude Code</span></div>
-      </article>
+      <!-- PLACEHOLDER LINKS: point each href at the real GitHub repo -->
 
-      <!-- PLACEHOLDER PROJECT 2 -->
-      <article class="card reveal">
-        <p class="eyebrow">02 · hackathon</p>
-        <h3>CupSense AI</h3>
-        <p>Multimodal accessibility tool that turns live sports broadcasts into
-           Braille-ready match data. I owned the match data layer and the
-           Braille protocol layer.</p>
-        <div class="tags"><span>Python</span><span>Accessibility</span><span>Multimodal</span></div>
-      </article>
+      <a class="card reveal" href="https://github.com/your-handle/nmr-spectrometer" target="_blank" rel="noopener">
+        <p class="eyebrow">01 · research</p>
+        <h3>DIY NMR Spectrometer</h3>
+        <p>Ground-up Nuclear Magnetic Resonance spectrometer: custom Verilog
+           pulse sequences on an Altera DE0-Nano FPGA capturing CPMG spin-echo
+           signals, with RF-shielded analog paths and a custom PCB.</p>
+        <div class="tags"><span>FPGA</span><span>Verilog</span><span>PCB Design</span><span>RF</span></div>
+      </a>
 
-      <!-- PLACEHOLDER PROJECT 3 -->
-      <article class="card reveal">
-        <p class="eyebrow">03 · analysis</p>
-        <h3>Model Output Reliability Study</h3>
-        <p>Placeholder: an evaluation project measuring hallucination rates of
-           LLM outputs against ground-truth datasets, with an error taxonomy
-           and dashboard.</p>
-        <div class="tags"><span>Pandas</span><span>Evals</span><span>Data Viz</span></div>
-      </article>
+      <a class="card reveal" href="https://github.com/your-handle/scomp-accelerator" target="_blank" rel="noopener">
+        <p class="eyebrow">02 · hardware</p>
+        <h3>SCOMP Arithmetic Accelerator</h3>
+        <p>Hardware-accelerated 16-bit multiply/divide peripheral in pure
+           combinational logic, with a memory-mapped I/O interface inspired by
+           x86 EAX/EDX split registers and divide-by-zero fault flagging.</p>
+        <div class="tags"><span>VHDL</span><span>Digital Logic</span><span>Assembly</span></div>
+      </a>
 
-      <!-- PLACEHOLDER PROJECT 4 -->
-      <article class="card reveal">
-        <p class="eyebrow">04 · tooling</p>
-        <h3>Safe Engineering SOP</h3>
-        <p>A practical, iterative standard operating procedure for using AI
-           coding agents safely on production systems — tested on real tasks.</p>
-        <div class="tags"><span>Process</span><span>AI Safety</span><span>Docs</span></div>
-      </article>
+      <a class="card reveal" href="https://github.com/your-handle/esp32-edge-ai" target="_blank" rel="noopener">
+        <p class="eyebrow">03 · embedded</p>
+        <h3>Embedded Edge AI System</h3>
+        <p>Multi-threaded FreeRTOS app on a dual-core ESP32-S3: concurrent AI
+           inference, BLE, and background ML updates — race-condition-free via
+           mutexes, semaphores, and ISRs, benchmarked with custom MMIO timers.</p>
+        <div class="tags"><span>ESP32-S3</span><span>FreeRTOS</span><span>C/C++</span></div>
+      </a>
+
+      <a class="card reveal" href="https://github.com/your-handle/crazy-dave" target="_blank" rel="noopener">
+        <p class="eyebrow">04 · IoT</p>
+        <h3>Crazy Dave 🌱</h3>
+        <p>AI-driven bio-acoustic garden defense: a Google Home Mini repurposed
+           as a programmable speaker that identifies animal sounds via AI and
+           plays targeted audio to repel pests (or greet friendly visitors).</p>
+        <div class="tags"><span>Python</span><span>IoT</span><span>Google Home API</span></div>
+      </a>
+
+      <a class="card reveal" href="https://github.com/your-handle/wanderlore" target="_blank" rel="noopener">
+        <p class="eyebrow">05 · 🏆 best use of snowflake</p>
+        <h3>WanderLore</h3>
+        <p>QuackHack 3.0 winner: event-driven architecture orchestrating
+           multiple LLM APIs through Snowflake Cortex to generate, process, and
+           route complex data responses in real time.</p>
+        <div class="tags"><span>Snowflake Cortex</span><span>LLM APIs</span><span>Architecture</span></div>
+      </a>
+
+      <a class="card reveal" href="https://github.com/your-handle/vibecheck" target="_blank" rel="noopener">
+        <p class="eyebrow">06 · 🏆 best use of gemini &amp; vultr</p>
+        <h3>VibeCheck</h3>
+        <p>DesignVerse 2026 winner: full-stack 3D interior design app — React +
+           Three.js front end, Vultr-hosted backend handling asynchronous Gemini
+           prompt engineering for dynamic, user-facing LLM experiences.</p>
+        <div class="tags"><span>React</span><span>Three.js</span><span>Gemini API</span></div>
+      </a>
     </div>
   </main>
 
@@ -80,7 +103,7 @@
       <a href="https://www.linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a> |
       <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
     </div>
-    © 2026 ELLA — built with HTML, CSS &amp; vanilla JS
+    © 2026 ALEX — built with HTML, CSS &amp; vanilla JS
   </footer>
 
   <script src="main.js"></script>

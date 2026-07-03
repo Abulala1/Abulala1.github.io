@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — Ella</title>
+  <title>About — Alex</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -11,9 +11,15 @@
 </head>
 <body>
 
+  <canvas id="drawCanvas" aria-hidden="true"></canvas>
+  <div class="draw-ui mono">
+    <span>✏ draw anywhere</span>
+    <button id="clearDraw" type="button">clear</button>
+  </div>
+
   <nav class="nav">
     <div class="nav-inner">
-      <a class="nav-logo" href="index.html">ELLA</a>
+      <a class="nav-logo" href="index.html">ALEX</a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">menu</button>
       <ul class="nav-links" id="nav-links">
         <li><a href="index.html">Home</a></li>
@@ -26,10 +32,10 @@
 
   <main class="wrap section">
     <p class="eyebrow">// about</p>
-    <h2>Hi, I'm Ella 👋</h2>
+    <h2>Hi, I'm Alex 👋</h2>
 
     <div class="about-grid">
-      <!-- PLACEHOLDER: replace this box with <img src="assets/your-photo.jpg" alt="Ella"> -->
+      <!-- PLACEHOLDER: replace this box with <img src="assets/your-photo.jpg" alt="Alex"> -->
       <div class="portrait reveal">
         [ your photo goes here ]<br />
         assets/your-photo.jpg
@@ -37,47 +43,68 @@
 
       <div class="reveal">
         <p style="margin-bottom: 1rem;">
-          I'm a Data Science student at UC Berkeley focused on the space where
-          AI meets trust: model evaluation, AI reliability, and responsible AI
-          systems. I've interned on multi-agent AI platforms and privacy-first
-          analytics products, and I like shipping real things — not just slides.
+          I'm a Computer Engineering student at Georgia Tech who likes working
+          at the boundary where hardware meets software — writing Verilog one
+          day and deploying cloud pipelines the next. Right now I'm building a
+          custom NMR spectrometer as a student researcher, from FPGA pulse
+          sequences down to the PCB.
         </p>
         <p style="margin-bottom: 2rem;">
-          Outside of work: bilingual (Chinese / English), parent, and recovering
-          over-planner learning to choose action over elaborate systems.
+          Before Georgia Tech I earned my A.S. in Engineering with a 4.0 at
+          San Antonio College, and I've interned as a software engineer working
+          on AWS data migrations and Docker-based deployments.
         </p>
 
         <p class="eyebrow">// timeline</p>
         <ul class="timeline">
           <li>
-            <span class="when">2025 — 2027 (expected)</span><br />
-            <strong>UC Berkeley</strong> — B.A. Data Science
+            <span class="when">Jan 2025 — present</span><br />
+            <strong>Georgia Tech</strong> — B.S. Computer Engineering (exp. May 2027)
+            &amp; Student Research Assistant (NMR spectrometer, FPGA)
           </li>
           <li>
-            <span class="when">2026</span><br />
-            <strong>AI Product Intern</strong> — multi-agent SaaS platform
-            <span class="mono">(placeholder details)</span>
+            <span class="when">May — Aug 2025</span><br />
+            <strong>Yakin ICT Technology</strong> — Software Engineer Intern:
+            fault-tolerant AWS data pipelines, Docker deployment
           </li>
           <li>
-            <span class="when">2026</span><br />
-            <strong>Product Strategy Intern</strong> — privacy-first AI analytics startup
+            <span class="when">Apr 2024</span><br />
+            <strong>Google exploreCSR</strong> — Research Computing Fellow:
+            Edge AI &amp; real-time graphics on NVIDIA Jetson Nano
           </li>
           <li>
-            <span class="when">2025</span><br />
-            <strong>A.S. Mathematics</strong> — San Diego Miramar College
+            <span class="when">2023 — 2024</span><br />
+            <strong>San Antonio College</strong> — A.S. Engineering, GPA 4.0
+          </li>
+        </ul>
+
+        <p class="eyebrow" style="margin-top: 2rem;">// awards</p>
+        <ul class="timeline">
+          <li>
+            <span class="when">May 2026</span><br />
+            <strong>Best Use of Snowflake</strong> — WanderLore, QuackHack 3.0
+          </li>
+          <li>
+            <span class="when">May 2026</span><br />
+            <strong>Best Use of Gemini API &amp; Best Use of Vultr</strong> — VibeCheck, DesignVerse 2026
           </li>
         </ul>
 
         <p class="eyebrow" style="margin-top: 2rem;">// toolbox</p>
         <ul class="skills">
+          <li>C/C++</li>
+          <li>Verilog</li>
+          <li>VHDL</li>
           <li>Python</li>
-          <li>Pandas</li>
-          <li>SQL</li>
-          <li>Data Viz</li>
-          <li>LLM Evals</li>
-          <li>Git</li>
-          <li>Claude Code</li>
-          <li>CN / EN</li>
+          <li>RISC-V ASM</li>
+          <li>FPGA (DE0-Nano)</li>
+          <li>ESP32</li>
+          <li>FreeRTOS</li>
+          <li>PCB Design</li>
+          <li>SolidWorks</li>
+          <li>Docker</li>
+          <li>AWS</li>
+          <li>React</li>
         </ul>
       </div>
     </div>
@@ -89,7 +116,7 @@
       <a href="https://www.linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a> |
       <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
     </div>
-    © 2026 ELLA — built with HTML, CSS &amp; vanilla JS
+    © 2026 ALEX — built with HTML, CSS &amp; vanilla JS
   </footer>
 
   <script src="main.js"></script>

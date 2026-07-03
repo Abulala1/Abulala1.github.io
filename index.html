@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ella — Data Science Portfolio</title>
-  <meta name="description" content="Personal portfolio of Ella — data science, AI reliability, and product analytics." />
+  <!-- PLACEHOLDER NAME: search-replace "ALEX" / "Alex" with your friend's real name -->
+  <title>Alex — Computer Engineering Portfolio</title>
+  <meta name="description" content="Portfolio of Alex — computer engineering, FPGAs, embedded systems, and edge AI." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -12,10 +13,17 @@
 </head>
 <body>
 
+  <!-- drawing layer: users can sketch on the background with their cursor -->
+  <canvas id="drawCanvas" aria-hidden="true"></canvas>
+  <div class="draw-ui mono">
+    <span>✏ draw anywhere</span>
+    <button id="clearDraw" type="button">clear</button>
+  </div>
+
   <!-- ===== Navigation ===== -->
   <nav class="nav">
     <div class="nav-inner">
-      <a class="nav-logo" href="index.html">ELLA</a>
+      <a class="nav-logo" href="index.html">ALEX</a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links">menu</button>
       <ul class="nav-links" id="nav-links">
         <li><a href="index.html" class="active">Home</a></li>
@@ -26,10 +34,28 @@
     </div>
   </nav>
 
-  <!-- ===== Hero: lanyard card (left) + animated intro (right) ===== -->
+  <!-- ===== Hero: intro text (left) + lanyard ID card (right) ===== -->
   <header class="hero hero-split">
 
-    <!-- ---- Left: draggable ID badge on a lanyard ---- -->
+    <!-- ---- Left: typewriter + boiling name ---- -->
+    <div class="hero-text">
+      <p class="typer mono">Hi! I'm <span id="typed"></span><span class="type-cursor">|</span></p>
+
+      <h1 class="hero-name" aria-label="ALEX">
+        <span class="boil">A</span><span class="boil">L</span><span class="boil">E</span><span class="boil">X</span>
+      </h1>
+
+      <p class="hero-sub">I build systems from transistors to the cloud —<br />
+        FPGAs, embedded AI, and the software that ties them together.</p>
+
+      <div class="hero-cta">
+        <a class="btn" href="projects.html">See my work</a>
+        <a class="btn btn--ghost" href="about.html">About me</a>
+      </div>
+      <p class="scroll-cue">↓ scroll down ↓</p>
+    </div>
+
+    <!-- ---- Right: draggable ID badge on a lanyard ---- -->
     <div class="lanyard">
       <div class="badge-wrap" id="badgeWrap">
         <div class="strap" aria-hidden="true"></div>
@@ -40,9 +66,9 @@
 
             <!-- front of the card -->
             <div class="badge-face badge-front">
-              <div class="badge-topbar mono">DATA·SCI // VISITOR PASS</div>
+              <div class="badge-topbar mono">HW·SW // VISITOR PASS</div>
               <div class="badge-photo">
-                <!-- PLACEHOLDER: replace with <img src="assets/your-photo.jpg" alt="Ella">
+                <!-- PLACEHOLDER: replace with <img src="assets/your-photo.jpg" alt="Alex">
                      if you'd rather show a real photo -->
                 <svg viewBox="0 0 126 118" class="badge-avatar badge-char" aria-hidden="true">
                   <!-- hair spikes -->
@@ -54,8 +80,8 @@
                   <circle cx="71" cy="50" r="8" class="cink"/>
                   <path d="M58 50 L63 50" class="cink"/>
                   <g class="char-eyes">
-                    <circle cx="50" cy="50" r="2.2" fill="var(--ink)"/>
-                    <circle cx="71" cy="50" r="2.2" fill="var(--ink)"/>
+                    <circle cx="50" cy="50" r="2.2" fill="var(--ink)" class="pupil" data-cx="50" data-cy="50"/>
+                    <circle cx="71" cy="50" r="2.2" fill="var(--ink)" class="pupil" data-cx="71" data-cy="50"/>
                   </g>
                   <!-- smile -->
                   <path d="M52 63 Q60 70 69 63" class="cink"/>
@@ -70,8 +96,8 @@
                   <path d="M112 48 L118 42 M114 60 L121 58" class="cink char-lines"/>
                 </svg>
               </div>
-              <p class="badge-name">ELLA</p>
-              <p class="badge-role mono">Data Scientist</p>
+              <p class="badge-name">ALEX</p>
+              <p class="badge-role mono">Computer Engineer</p>
               <div class="badge-barcode" aria-hidden="true"></div>
             </div>
 
@@ -79,10 +105,10 @@
             <div class="badge-face badge-back">
               <p class="mono badge-back-title">// ACCESS INFO</p>
               <ul class="badge-info mono">
-                <li><span>BASE</span> Berkeley, CA</li>
-                <li><span>MAJOR</span> Data Science</li>
-                <li><span>FOCUS</span> AI Reliability</li>
-                <li><span>LANG</span> CN / EN</li>
+                <li><span>BASE</span> Atlanta, GA</li>
+                <li><span>SCHOOL</span> Georgia Tech</li>
+                <li><span>MAJOR</span> Computer Eng.</li>
+                <li><span>FOCUS</span> FPGA · Embedded</li>
                 <li><span>STATUS</span> open to collab ✅</li>
               </ul>
               <a class="btn badge-btn" href="contact.html">Say hi →</a>
@@ -93,35 +119,22 @@
       </div>
       <p class="badge-hint mono">↖ drag me · click to flip</p>
     </div>
-
-    <!-- ---- Right: typewriter + boiling name + waving doodle ---- -->
-    <div class="hero-text">
-      <p class="typer mono">Hi! I'm <span id="typed"></span><span class="type-cursor">|</span></p>
-
-      <h1 class="hero-name" aria-label="ELLA">
-        <span class="boil">E</span><span class="boil">L</span><span class="boil">L</span><span class="boil">A</span>
-      </h1>
-
-      <p class="hero-sub">I turn messy data into decisions people can trust.</p>
-      <div class="hero-cta">
-        <a class="btn" href="projects.html">See my work</a>
-        <a class="btn btn--ghost" href="about.html">About me</a>
-      </div>
-      <p class="scroll-cue">↓ scroll down ↓</p>
-    </div>
   </header>
 
   <!-- ===== Teaser section ===== -->
   <section class="section wrap">
     <div class="reveal">
       <p class="eyebrow">// currently</p>
-      <h2>Let's make data make sense.</h2>
-      <p style="max-width: 40rem;">
-        I'm studying Data Science at UC Berkeley and interning on AI products —
-        from multi-agent platforms to privacy-first analytics tools. I care about
-        one question: <strong>can we trust what the model just said?</strong>
+      <h2>From Verilog to the web.</h2>
+      <p style="max-width: 42rem;">
+        I'm studying Computer Engineering at Georgia Tech, where I'm building a
+        custom NMR spectrometer from scratch as a student researcher — FPGA pulse
+        sequences, RF shielding, custom PCBs, the whole stack. On the software
+        side I've shipped cloud data pipelines, embedded AI on ESP32, and a
+        couple of hackathon winners.
       </p>
       <div class="contact-links">
+        <a class="btn btn--ghost" href="projects.html">Browse projects</a>
         <a class="btn btn--ghost" href="contact.html">Get in touch</a>
       </div>
     </div>
@@ -130,12 +143,12 @@
   <!-- ===== Footer ===== -->
   <footer>
     <div class="social">
-      <!-- PLACEHOLDER: replace with your real links -->
+      <!-- PLACEHOLDER: replace with real links -->
       <a href="mailto:hello@example.com">Email</a> |
       <a href="https://www.linkedin.com/in/your-handle" target="_blank" rel="noopener">LinkedIn</a> |
       <a href="https://github.com/your-handle" target="_blank" rel="noopener">GitHub</a>
     </div>
-    © 2026 ELLA — built with HTML, CSS &amp; vanilla JS
+    © 2026 ALEX — built with HTML, CSS &amp; vanilla JS
   </footer>
 
   <script src="main.js"></script>
