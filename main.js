@@ -343,11 +343,19 @@ if (canvas) {
   };
 
   const isInteractive = (target) =>
-    target.closest("a, button, input, textarea, .badge, .nav, .draw-ui, .chip");
+    target.closest("a, button, input, textarea, .badge, .nav, .draw-ui, .chip, .ic, .pcb-board, .ic-tray");
 
   document.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
     if (isInteractive(e.target)) return;
+
+    /* SELECTION FIX: stop the browser from starting a text selection
+       when a stroke begins over text — preventDefault cancels the
+       native mousedown behavior, the body class blocks selection for
+       the whole stroke, and any half-made selection is cleared */
+    e.preventDefault();
+    document.body.classList.add("no-select");
+    window.getSelection?.().removeAllRanges();
 
     drawing = true;
     strokeMoved = 0;
@@ -371,6 +379,7 @@ if (canvas) {
   });
 
   const stopDrawing = () => {
+    document.body.classList.remove("no-select");
     if (!drawing) return;
     drawing = false;
     /* barely moved = a click → pigment explosion! */
@@ -390,4 +399,157 @@ if (canvas) {
       blit();
     });
   }
+}
+
+/* ---------- 7) PCB skill lab (about page) ---------- */
+/*
+   12 skill ICs, 6 sockets. Drag an IC from the tray onto any empty
+   socket; drag it off to return it to the tray. The CPU reads which
+   CATEGORIES are plugged in and prints the matching job title.
+
+   Categories: HW (hardware), SW (software), CLOUD, EMB (embedded).
+*/
+const pcbBoard = document.getElementById("pcbBoard");
+const icTray = document.getElementById("icTray");
+const chipTitle = document.getElementById("chipTitle");
+const chipSub = document.getElementById("chipSub");
+
+if (pcbBoard && icTray && chipTitle) {
+  /* PLACEHOLDER: edit labels/categories/shapes freely.
+     shapes: h = wide, v = vertical, sq = square, s = small rect */
+  const SKILLS = [
+    { label: "VERILOG",  cat: "HW",    shape: "h"  },
+    { label: "VHDL",     cat: "HW",    shape: "v"  },
+    { label: "FPGA",     cat: "HW",    shape: "sq" },
+    { label: "PCB",      cat: "HW",    shape: "s"  },
+    { label: "PYTHON",   cat: "SW",    shape: "h"  },
+    { label: "C/C++",    cat: "SW",    shape: "s"  },
+    { label: "REACT",    cat: "SW",    shape: "sq" },
+    { label: "AWS",      cat: "CLOUD", shape: "s"  },
+    { label: "DOCKER",   cat: "CLOUD", shape: "v"  },
+    { label: "ESP32",    cat: "EMB",   shape: "sq" },
+    { label: "FreeRTOS", cat: "EMB",   shape: "h"  },
+    { label: "RISC-V",   cat: "EMB",   shape: "v"  },
+  ];
+
+  const sockets = [...pcbBoard.querySelectorAll(".socket")];
+
+  /* build the ICs into the tray */
+  SKILLS.forEach((skill) => {
+    const ic = document.createElement("div");
+    ic.className = `ic ic--${skill.shape}`;
+    ic.dataset.cat = skill.cat;
+    ic.textContent = skill.label;
+    icTray.appendChild(ic);
+  });
+
+  /* --- title logic --- */
+  const SOLO = {
+    HW: "HARDWARE ENGINEER",
+    SW: "SOFTWARE ENGINEER",
+    CLOUD: "CLOUD ENGINEER",
+    EMB: "EMBEDDED ENGINEER",
+  };
+  const PAIRS = {
+    "EMB+HW": "FIRMWARE ENGINEER",
+    "CLOUD+SW": "FULL-STACK ENGINEER",
+    "HW+SW": "COMPUTER ENGINEER",
+    "EMB+SW": "EMBEDDED SW ENGINEER",
+    "CLOUD+EMB": "IoT ENGINEER",
+    "CLOUD+HW": "SYSTEMS ENGINEER",
+  };
+
+  const updateChip = () => {
+    const placed = sockets.filter((s) => s.querySelector(".ic"));
+    const cats = new Set(placed.map((s) => s.querySelector(".ic").dataset.cat));
+
+    let title;
+    if (cats.size === 0) title = "PLUG IN SKILL ICs";
+    else if (cats.size === 1) title = SOLO[[...cats][0]];
+    else if (cats.size === 2) title = PAIRS[[...cats].sort().join("+")];
+    else if (cats.size === 3) title = "SYSTEMS ENGINEER";
+    else title = "SYSTEMS ARCHITECT 🏆";
+
+    if (chipTitle.textContent !== title) {
+      chipTitle.textContent = title;
+      chipTitle.classList.remove("flash");
+      void chipTitle.offsetWidth;        // restart the flash animation
+      chipTitle.classList.add("flash");
+    }
+    chipSub.textContent = `${placed.length}/${sockets.length} sockets`;
+  };
+
+  /* --- drag & drop --- */
+  let held = null;
+
+  const grab = (e) => {
+    const ic = e.target.closest(".ic");
+    if (!ic) return;
+    e.preventDefault();
+    held = ic;
+    ic.setPointerCapture(e.pointerId);
+    ic.classList.add("dragging");
+
+    /* lift it out of tray/socket onto the page so nothing clips it */
+    const r = ic.getBoundingClientRect();
+    document.body.appendChild(ic);
+    ic.style.position = "fixed";
+    ic.style.left = `${r.left}px`;
+    ic.style.top = `${r.top}px`;
+    ic.style.margin = "0";
+    ic.style.transform = "none";
+    updateChip();                        // socket it left is now empty
+    moveTo(e);
+  };
+
+  const moveTo = (e) => {
+    if (!held) return;
+    held.style.left = `${e.clientX - held.offsetWidth / 2}px`;
+    held.style.top = `${e.clientY - held.offsetHeight / 2}px`;
+
+    /* highlight the empty socket under the pointer */
+    sockets.forEach((s) => {
+      const r = s.getBoundingClientRect();
+      const over =
+        e.clientX > r.left && e.clientX < r.right &&
+        e.clientY > r.top && e.clientY < r.bottom;
+      s.classList.toggle("hot", over && !s.querySelector(".ic"));
+    });
+  };
+
+  const drop = (e) => {
+    if (!held) return;
+    const ic = held;
+    held = null;
+    ic.classList.remove("dragging");
+    ic.releasePointerCapture?.(e.pointerId);
+
+    /* find an empty socket under the pointer */
+    const target = sockets.find((s) => {
+      const r = s.getBoundingClientRect();
+      return (
+        e.clientX > r.left && e.clientX < r.right &&
+        e.clientY > r.top && e.clientY < r.bottom &&
+        !s.querySelector(".ic")
+      );
+    });
+
+    /* reset inline positioning, then seat it */
+    ic.style.position = "";
+    ic.style.left = "";
+    ic.style.top = "";
+    ic.style.transform = "";
+
+    (target || icTray).appendChild(ic);
+    sockets.forEach((s) => s.classList.remove("hot"));
+    updateChip();
+  };
+
+  icTray.addEventListener("pointerdown", grab);
+  pcbBoard.addEventListener("pointerdown", grab);
+  document.addEventListener("pointermove", moveTo);
+  document.addEventListener("pointerup", drop);
+  document.addEventListener("pointercancel", drop);
+
+  updateChip();
 }

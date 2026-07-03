@@ -667,17 +667,155 @@ a.card h3::after {
   font-size: 0.8em;
 }
 
-/* ---------- Self-assembling PCB (about page) ---------- */
-.pcb-frame { padding: 0.5rem; overflow: hidden; }
-.pcb { width: 100%; height: 100%; }
+/* ---------- No-select while drawing ---------- */
+/* toggled on <body> during a stroke so drawing over text never
+   starts a text selection */
+.no-select, .no-select * { user-select: none !important; }
 
-/* each part starts offset & rotated (per-part CSS variables set in
-   the HTML) and flies to its final position ONCE per page load —
-   no infinite loop, `both` keeps the finished pose afterwards */
-.pcb .part {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: fly-in 0.85s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
+/* ---------- Interactive PCB skill lab (about page) ---------- */
+.pcb-lab { display: flex; flex-direction: column; gap: 1rem; }
+
+.pcb-board {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  height: 460px;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.16) 1.6px, transparent 1.6px),
+    #232951;                                  /* dark PCB substrate */
+  background-size: 22px 22px;
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--ink);
+  animation: fly-in 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
+  --fx: 0px; --fy: 120px; --rot: 0deg;
+}
+
+/* the big CPU in the middle */
+.mega-chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  min-height: 100px;
+  background: var(--ink);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.6rem;
+  text-align: center;
+  z-index: 2;
+}
+/* CPU "pins" */
+.mega-chip::before, .mega-chip::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 8px;
+  background: repeating-linear-gradient(90deg,
+    rgba(255,255,255,0.6) 0 4px, transparent 4px 12px);
+}
+.mega-chip::before { top: -10px; }
+.mega-chip::after { bottom: -10px; }
+
+.mega-title {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 0.95rem;
+  color: var(--coral);
+  line-height: 1.25;
+}
+.mega-title.flash { animation: title-flash 0.45s steps(2); }
+@keyframes title-flash {
+  0% { color: #fff; transform: scale(1.12); }
+  100% { color: var(--coral); transform: scale(1); }
+}
+.mega-sub { font-size: 0.65rem; color: rgba(255, 255, 255, 0.7); }
+
+/* sockets — dashed landing pads around the CPU */
+.socket {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  border: 2px dashed rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.socket.hot {                    /* highlighted while an IC hovers over it */
+  border-color: var(--coral);
+  background: rgba(255, 106, 92, 0.12);
+}
+.socket[data-socket="1"] { left: 4%;  top: 3%; }
+.socket[data-socket="2"] { right: 4%; top: 3%; }
+.socket[data-socket="3"] { left: 4%;  top: 50%; transform: translateY(-50%); }
+.socket[data-socket="4"] { right: 4%; top: 50%; transform: translateY(-50%); }
+.socket[data-socket="5"] { left: 4%;  bottom: 3%; }
+.socket[data-socket="6"] { right: 4%; bottom: 3%; }
+
+/* the parts tray */
+.ic-tray {
+  min-height: 96px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  animation: fly-in 0.9s 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
+  --fx: 0px; --fy: 120px; --rot: 0deg;
+}
+
+/* skill ICs — four shapes */
+.ic {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--ink);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  outline: 2px solid var(--ink);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  padding: 2px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+.ic:active { cursor: grabbing; }
+.ic.dragging { opacity: 0.92; z-index: 100; box-shadow: 6px 8px 0 rgba(0,0,0,0.3); }
+
+.ic--h  { width: 88px; height: 32px; }                       /* wide DIP */
+.ic--v  { width: 32px; height: 88px; writing-mode: vertical-rl; } /* vertical */
+.ic--sq { width: 58px; height: 58px; }                       /* square QFP */
+.ic--s  { width: 66px; height: 40px; }                       /* small rect */
+
+/* category accent stripe on each IC */
+.ic[data-cat="HW"]    { border-bottom-color: var(--coral); }
+.ic[data-cat="SW"]    { border-bottom-color: #17a34a; }
+.ic[data-cat="CLOUD"] { border-bottom-color: #f59e0b; }
+.ic[data-cat="EMB"]   { border-bottom-color: #8b5cf6; }
+
+/* an IC seated in a socket sits centered */
+.socket .ic {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @keyframes fly-in {

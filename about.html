@@ -35,89 +35,26 @@
     <h2>Hi, I'm Aaron 👋</h2>
 
     <div class="about-grid">
-      <!-- Self-assembling circuit board: each .part flies in from the
-           direction set by its CSS variables (--fx/--fy/--rot), once per
-           page load. Replace with a real photo later if he prefers. -->
-      <div class="portrait pcb-frame">
-        <svg viewBox="0 0 300 375" class="pcb" aria-label="Animated circuit board assembling itself">
-
-          <!-- the board itself rises up from below -->
-          <g class="part" style="--fx: 0px; --fy: 320px; --rot: 0deg; animation-delay: 0s;">
-            <rect x="20" y="18" width="260" height="339" rx="14" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
-            <circle cx="40" cy="38" r="6" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
-            <circle cx="260" cy="38" r="6" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
-            <circle cx="40" cy="337" r="6" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
-            <circle cx="260" cy="337" r="6" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
-          </g>
-
-          <!-- copper traces fade in from the left -->
-          <g class="part" style="--fx: -260px; --fy: 0px; --rot: 0deg; animation-delay: 0.35s;"
-             fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round">
-            <path d="M60 90 H120 V150 H105"/>
-            <path d="M60 130 H100 V150"/>
-            <path d="M195 150 H235 V90"/>
-            <path d="M150 225 V260 H90 V300"/>
-            <path d="M175 225 V275 H220 V300"/>
-            <path d="M60 300 H70 V260"/>
-            <circle cx="60" cy="90" r="4"/>
-            <circle cx="60" cy="130" r="4"/>
-            <circle cx="235" cy="90" r="4"/>
-            <circle cx="90" cy="300" r="4"/>
-            <circle cx="220" cy="300" r="4"/>
-            <circle cx="60" cy="300" r="4"/>
-          </g>
-
-          <!-- FPGA chip drops in from above, spinning -->
-          <g class="part" style="--fx: 40px; --fy: -320px; --rot: 200deg; animation-delay: 0.7s;">
-            <rect x="105" y="150" width="90" height="75" rx="6" fill="var(--ink)"/>
-            <!-- pins -->
-            <g stroke="var(--ink)" stroke-width="3">
-              <path d="M115 150 V138 M133 150 V138 M151 150 V138 M169 150 V138 M187 150 V138"/>
-              <path d="M115 225 V237 M133 225 V237 M151 225 V237 M169 225 V237 M187 225 V237"/>
-              <path d="M105 162 H93 M105 177 H93 M105 192 H93 M105 207 H93"/>
-              <path d="M195 162 H207 M195 177 H207 M195 192 H207 M195 207 H207"/>
-            </g>
-            <text x="150" y="184" text-anchor="middle" fill="var(--paper)"
-                  font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600">FPGA</text>
-            <text x="150" y="202" text-anchor="middle" fill="var(--coral)"
-                  font-family="IBM Plex Mono, monospace" font-size="9">DE0-NANO</text>
-          </g>
-
-          <!-- resistors zip in from the right -->
-          <g class="part" style="--fx: 280px; --fy: -60px; --rot: 90deg; animation-delay: 1.0s;">
-            <g stroke="var(--ink)" stroke-width="2.5">
-              <path d="M52 90 H68"/><rect x="44" y="83" width="10" height="14" rx="2" fill="var(--coral)" />
-              <path d="M52 130 H68"/><rect x="44" y="123" width="10" height="14" rx="2" fill="var(--coral)" />
-            </g>
-          </g>
-
-          <!-- capacitors roll in from bottom-left -->
-          <g class="part" style="--fx: -180px; --fy: 200px; --rot: -160deg; animation-delay: 1.15s;">
-            <circle cx="240" cy="70" r="12" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
-            <path d="M236 70 H244 M240 66 V74" stroke="var(--ink)" stroke-width="2"/>
-            <circle cx="65" cy="255" r="10" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
-            <path d="M61 255 H69" stroke="var(--ink)" stroke-width="2"/>
-          </g>
-
-          <!-- pin header slides in from the top-right -->
-          <g class="part" style="--fx: 200px; --fy: -220px; --rot: 45deg; animation-delay: 1.3s;">
-            <rect x="80" y="300" width="150" height="16" rx="3" fill="var(--ink)"/>
-            <g fill="var(--paper)">
-              <circle cx="95" cy="308" r="3"/><circle cx="113" cy="308" r="3"/>
-              <circle cx="131" cy="308" r="3"/><circle cx="149" cy="308" r="3"/>
-              <circle cx="167" cy="308" r="3"/><circle cx="185" cy="308" r="3"/>
-              <circle cx="203" cy="308" r="3"/><circle cx="218" cy="308" r="3"/>
-            </g>
-          </g>
-
-          <!-- LED pops in last with a little spin -->
-          <g class="part" style="--fx: -90px; --fy: -260px; --rot: 300deg; animation-delay: 1.45s;">
-            <circle cx="235" cy="255" r="8" fill="var(--coral)" stroke="var(--ink)" stroke-width="2.5"/>
-            <path d="M247 243 L253 237 M249 255 L257 255" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round"/>
-            <text x="150" y="345" text-anchor="middle" fill="var(--blue)"
-                  font-family="IBM Plex Mono, monospace" font-size="10">AARON-BOARD REV 1.0</text>
-          </g>
-        </svg>
+      <!-- Interactive PCB: drag skill ICs from the tray into sockets.
+           The center mega-chip's title changes based on the combination. -->
+      <div class="pcb-lab">
+        <div class="pcb-board" id="pcbBoard">
+          <div class="mega-chip">
+            <span class="mega-title" id="chipTitle">PLUG IN SKILL ICs</span>
+            <span class="mega-sub mono" id="chipSub">0/6 sockets</span>
+          </div>
+          <!-- 6 sockets, positioned by CSS -->
+          <div class="socket" data-socket="1"></div>
+          <div class="socket" data-socket="2"></div>
+          <div class="socket" data-socket="3"></div>
+          <div class="socket" data-socket="4"></div>
+          <div class="socket" data-socket="5"></div>
+          <div class="socket" data-socket="6"></div>
+        </div>
+        <div class="ic-tray" id="icTray">
+          <!-- skill ICs are generated by main.js -->
+        </div>
+        <p class="badge-hint mono">drag chips onto the board — the CPU decides what I am</p>
       </div>
 
       <div class="reveal">
