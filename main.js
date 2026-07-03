@@ -95,14 +95,18 @@ const badge = document.getElementById("badge");
 if (badgeWrap && badge) {
   let angle = 0;
   let velocity = 0;
+  let ty = 0;            // vertical offset (drag up/down)
+  let tyVel = 0;         // vertical spring velocity
   let dragging = false;
   let pivotX = 0;
   let pivotY = 0;
+  let grabY = 0;         // pointer Y at grab time
+  let baseTy = 0;
   let moved = 0;
   let rafId = null;
 
-  const setAngle = (a) => {
-    badgeWrap.style.transform = `rotate(${a}deg)`;
+  const setTransform = () => {
+    badgeWrap.style.transform = `translateY(${ty}px) rotate(${angle}deg)`;
   };
 
   const stopIdleSway = () => badgeWrap.classList.add("held");
@@ -111,17 +115,26 @@ if (badgeWrap && badge) {
     badgeWrap.style.transform = "";
   };
 
+  /* two independent springs: one for rotation, one for vertical pull */
   const springBack = () => {
     velocity += -0.06 * angle;
     velocity *= 0.92;
     angle += velocity;
-    setAngle(angle);
 
-    if (Math.abs(angle) > 0.3 || Math.abs(velocity) > 0.3) {
+    tyVel += -0.08 * ty;
+    tyVel *= 0.88;
+    ty += tyVel;
+
+    setTransform();
+
+    const settled =
+      Math.abs(angle) < 0.3 && Math.abs(velocity) < 0.3 &&
+      Math.abs(ty) < 0.5 && Math.abs(tyVel) < 0.5;
+
+    if (!settled) {
       rafId = requestAnimationFrame(springBack);
     } else {
-      angle = 0;
-      velocity = 0;
+      angle = 0; velocity = 0; ty = 0; tyVel = 0;
       startIdleSway();
     }
   };
@@ -131,27 +144,34 @@ if (badgeWrap && badge) {
     badge.setPointerCapture(e.pointerId);
     dragging = true;
     moved = 0;
+    grabY = e.clientY;
+    baseTy = ty;
 
     if (rafId) cancelAnimationFrame(rafId);
     stopIdleSway();
 
     const rect = badgeWrap.getBoundingClientRect();
     pivotX = rect.left + rect.width / 2;
-    pivotY = rect.top;
-    setAngle(angle);
+    pivotY = rect.top - ty; // pivot in "resting" coordinates
+    setTransform();
   });
 
   badge.addEventListener("pointermove", (e) => {
     if (!dragging) return;
     moved += Math.abs(e.movementX) + Math.abs(e.movementY);
 
+    /* vertical pull — like stretching the lanyard */
+    const prevTy = ty;
+    ty = Math.max(-60, Math.min(170, baseTy + (e.clientY - grabY)));
+    tyVel = ty - prevTy;
+
+    /* rotation toward the pointer (sign negated — see note above) */
     const dx = e.clientX - pivotX;
     const dy = Math.max(e.clientY - pivotY, 40);
     const prev = angle;
-    /* the crucial minus sign — see DIRECTION NOTE above */
     angle = -Math.max(-70, Math.min(70, (Math.atan2(dx, dy) * 180) / Math.PI));
     velocity = angle - prev;
-    setAngle(angle);
+    setTransform();
   });
 
   const release = (e) => {
@@ -214,61 +234,160 @@ if (pupils.length) {
 
 /* ---------- 6) Draw on the background ---------- */
 /*
-   A fixed full-screen canvas sits behind the content (z-index -1).
-   We listen on the whole document, but only start a stroke when the
-   press lands on "empty" space — not on links, buttons, the card,
-   the nav, or project cards — so all normal interactions still work.
+   Two layers:
+   - an OFFSCREEN "art" canvas holds everything permanent
+     (finished strokes + dried paint splatter)
+   - the VISIBLE canvas shows art + any live particles
+
+   Every new stroke gets the next color from the palette.
+   A click (press with almost no movement) on empty space
+   triggers a pigment explosion: particles burst outward,
+   and where each one dies it stamps a splat into the art.
 */
 const canvas = document.getElementById("drawCanvas");
 
 if (canvas) {
   const ctx = canvas.getContext("2d");
+  const art = document.createElement("canvas");
+  const artCtx = art.getContext("2d");
+
+  const PALETTE = ["#ff6a5c", "#2c4fd8", "#17a34a", "#8b5cf6", "#f59e0b", "#ec4899", "#171a2b"];
+  let colorIndex = 0;
+  let strokeColor = PALETTE[0];
+
   let drawing = false;
+  let strokeMoved = 0;
+  let downPoint = null;
+  const particles = [];
+  let rafId = null;
+
+  const blit = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(art, 0, 0);
+  };
 
   const resize = () => {
-    /* copy existing drawing so a resize doesn't wipe it */
     const snapshot = document.createElement("canvas");
-    snapshot.width = canvas.width;
-    snapshot.height = canvas.height;
-    snapshot.getContext("2d").drawImage(canvas, 0, 0);
+    snapshot.width = art.width || 1;
+    snapshot.height = art.height || 1;
+    snapshot.getContext("2d").drawImage(art, 0, 0);
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ctx.drawImage(snapshot, 0, 0);
+    canvas.width = art.width = window.innerWidth;
+    canvas.height = art.height = window.innerHeight;
+    artCtx.drawImage(snapshot, 0, 0);
 
-    ctx.strokeStyle = "#ff6a5c";   /* coral pen */
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    artCtx.lineWidth = 3;
+    artCtx.lineCap = "round";
+    artCtx.lineJoin = "round";
+    blit();
   };
   resize();
   window.addEventListener("resize", resize);
+
+  /* --- particle explosion --- */
+  const explode = (x, y, color) => {
+    const count = 26 + Math.floor(Math.random() * 10);
+    for (let i = 0; i < count; i++) {
+      const dir = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 8;
+      particles.push({
+        x, y,
+        vx: Math.cos(dir) * speed,
+        vy: Math.sin(dir) * speed - 2,      // slight upward kick
+        r: 2 + Math.random() * 4,
+        life: 30 + Math.random() * 30,
+        color,
+      });
+    }
+    /* stamp a central blob immediately — the "impact" */
+    artCtx.fillStyle = color;
+    artCtx.beginPath();
+    artCtx.arc(x, y, 7 + Math.random() * 5, 0, Math.PI * 2);
+    artCtx.fill();
+
+    if (!rafId) rafId = requestAnimationFrame(animateParticles);
+  };
+
+  const animateParticles = () => {
+    blit();
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.18;      // gravity
+      p.vx *= 0.99;      // air drag
+      p.life--;
+      p.r *= 0.985;
+
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(p.r, 0.5), 0, Math.PI * 2);
+      ctx.fill();
+
+      /* particle dies → dried splat joins the permanent art */
+      if (p.life <= 0) {
+        artCtx.fillStyle = p.color;
+        artCtx.beginPath();
+        artCtx.arc(p.x, p.y, Math.max(p.r, 1), 0, Math.PI * 2);
+        artCtx.fill();
+        particles.splice(i, 1);
+      }
+    }
+
+    if (particles.length) {
+      rafId = requestAnimationFrame(animateParticles);
+    } else {
+      rafId = null;
+      blit();
+    }
+  };
 
   const isInteractive = (target) =>
     target.closest("a, button, input, textarea, .badge, .nav, .draw-ui, .chip");
 
   document.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;            // left click / touch only
-    if (isInteractive(e.target)) return;   // let real UI work normally
+    if (e.button !== 0) return;
+    if (isInteractive(e.target)) return;
+
     drawing = true;
-    ctx.beginPath();
-    ctx.moveTo(e.clientX, e.clientY);
+    strokeMoved = 0;
+    downPoint = { x: e.clientX, y: e.clientY };
+
+    /* every stroke/click gets the next color in the cycle */
+    strokeColor = PALETTE[colorIndex % PALETTE.length];
+    colorIndex++;
+    artCtx.strokeStyle = strokeColor;
+
+    artCtx.beginPath();
+    artCtx.moveTo(e.clientX, e.clientY);
   });
 
   document.addEventListener("pointermove", (e) => {
     if (!drawing) return;
-    ctx.lineTo(e.clientX, e.clientY);
-    ctx.stroke();
+    strokeMoved += Math.abs(e.movementX) + Math.abs(e.movementY);
+    artCtx.lineTo(e.clientX, e.clientY);
+    artCtx.stroke();
+    if (!rafId) blit();   // particles already blit each frame
   });
 
-  const stopDrawing = () => { drawing = false; };
+  const stopDrawing = () => {
+    if (!drawing) return;
+    drawing = false;
+    /* barely moved = a click → pigment explosion! */
+    if (strokeMoved < 6 && downPoint) {
+      explode(downPoint.x, downPoint.y, strokeColor);
+    }
+    downPoint = null;
+  };
   document.addEventListener("pointerup", stopDrawing);
   document.addEventListener("pointercancel", stopDrawing);
 
   const clearBtn = document.getElementById("clearDraw");
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.length = 0;
+      artCtx.clearRect(0, 0, art.width, art.height);
+      blit();
     });
   }
 }
