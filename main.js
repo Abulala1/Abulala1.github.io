@@ -36,7 +36,7 @@ document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 const typed = document.getElementById("typed");
 /* PLACEHOLDER: edit these to change the rotating words */
 const roles = [
-  "ALEX",
+  "AARON",
   "a Computer Engineer",
   "an FPGA Tinkerer",
   "an Embedded Dev",
