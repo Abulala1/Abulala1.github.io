@@ -1,141 +1,231 @@
 /* ============================================================
-   main.js — shared behavior
-   1) Hamburger menu          4) Lanyard card physics + flip
-   2) Scroll-reveal           5) Eyes track the cursor
-   3) Typewriter roles        6) Draw on the background
+   AARON — portfolio scripts
+   ------------------------------------------------------------
+   Everything you'd normally want to change lives in CONFIG,
+   right below. The rest is behavior, organized in sections:
+
+     1. Navigation (hamburger menu)
+     2. Scroll-reveal animations
+     3. Typewriter intro
+     4. Lanyard ID card (drag physics + flip)
+     5. Badge character eye tracking
+     6. Background sketch layer (multi-color + explosions)
+     7. Dev-board skill game (drag ICs, LCD title)
    ============================================================ */
 
-/* ---------- 1) Hamburger menu ---------- */
-const toggle = document.querySelector(".nav-toggle");
-const links = document.querySelector(".nav-links");
+/* ------------------------------------------------------------
+   ✏ CONFIG — safe to edit, no code knowledge needed
+   ------------------------------------------------------------ */
+const CONFIG = {
+  /* words the intro types after "Hi! I'm ..." */
+  typewriterRoles: [
+    "AARON",
+    "a Computer Engineer",
+    "a Hardware + Software Builder",
+    "an Embedded & Edge AI Developer",
+    "a Cloud-Native Problem Solver",
+    "a UI/UX-Minded Engineer",
+  ],
 
-if (toggle && links) {
+  /* pen colors for the background sketch layer (cycled per stroke) */
+  penColors: ["#ff6a5c", "#2c4fd8", "#17a34a", "#8b5cf6", "#f59e0b", "#ec4899", "#171a2b"],
+
+  /* skill ICs for the dev-board game (about page).
+     cat: HW | SW | CLOUD | EMB   shape: h (wide) | sq (square) | s (small) */
+  skills: [
+    { label: "VERILOG",   cat: "HW",    shape: "h"  },
+    { label: "VHDL",      cat: "HW",    shape: "s"  },
+    { label: "PCB",       cat: "HW",    shape: "sq" },
+    { label: "RF",        cat: "HW",    shape: "s"  },
+    { label: "PYTHON",    cat: "SW",    shape: "h"  },
+    { label: "C/C++",     cat: "SW",    shape: "s"  },
+    { label: "JAVA",      cat: "SW",    shape: "sq" },
+    { label: "REACT",     cat: "SW",    shape: "s"  },
+    { label: "SQL",       cat: "SW",    shape: "sq" },
+    { label: "AWS",       cat: "CLOUD", shape: "s"  },
+    { label: "DOCKER",    cat: "CLOUD", shape: "h"  },
+    { label: "SNOWFLAKE", cat: "CLOUD", shape: "h"  },
+    { label: "ESP32",     cat: "EMB",   shape: "sq" },
+    { label: "FreeRTOS",  cat: "EMB",   shape: "h"  },
+    { label: "SPI·I2C",   cat: "EMB",   shape: "s"  },
+    { label: "EDGE AI",   cat: "EMB",   shape: "sq" },
+  ],
+
+  /* job titles the LCD shows, based on which categories are plugged in */
+  titles: {
+    empty: "PLUG IN SKILL ICs",
+    solo: {
+      HW: "HARDWARE ENGINEER",
+      SW: "SOFTWARE ENGINEER",
+      CLOUD: "CLOUD ENGINEER",
+      EMB: "EMBEDDED ENGINEER",
+    },
+    pairs: {
+      "EMB+HW": "FIRMWARE ENGINEER",
+      "CLOUD+SW": "FULL-STACK ENGINEER",
+      "HW+SW": "COMPUTER ENGINEER",
+      "EMB+SW": "EMBEDDED SW ENGINEER",
+      "CLOUD+EMB": "IoT ENGINEER",
+      "CLOUD+HW": "SYSTEMS ENGINEER",
+    },
+    threeCats: "SYSTEMS ENGINEER",
+    fourCats: "SYSTEMS ARCHITECT 🏆",
+  },
+};
+
+/* elements that should never trigger the sketch layer */
+const INTERACTIVE_SELECTOR =
+  "a, button, input, textarea, .badge, .nav, .draw-ui, .ic, .pcb-board, .ic-tray";
+
+const prefersReducedMotion =
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ============================================================
+   1. Navigation — hamburger menu on small screens
+   ============================================================ */
+(() => {
+  const toggle = document.querySelector(".nav-toggle");
+  const links = document.querySelector(".nav-links");
+  if (!toggle || !links) return;
+
   toggle.addEventListener("click", () => {
-    links.classList.toggle("open");
-    const isOpen = links.classList.contains("open");
+    const isOpen = links.classList.toggle("open");
     toggle.setAttribute("aria-expanded", String(isOpen));
     toggle.textContent = isOpen ? "close" : "menu";
   });
-}
+})();
 
-/* ---------- 2) Scroll reveal ---------- */
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.12 }
-);
-document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+/* ============================================================
+   2. Scroll-reveal — fade elements in as they enter the viewport
+   ============================================================ */
+(() => {
+  const revealables = document.querySelectorAll(".reveal");
+  if (!revealables.length) return;
 
-/* ---------- 3) Typewriter ---------- */
-const typed = document.getElementById("typed");
-/* PLACEHOLDER: edit these to change the rotating words */
-const roles = [
-  "AARON",
-  "a Computer Engineer",
-  "an FPGA Tinkerer",
-  "an Embedded Dev",
-  "a Hackathon Winner 🏆",
-];
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
 
-if (typed) {
+  revealables.forEach((el) => observer.observe(el));
+})();
+
+/* ============================================================
+   3. Typewriter — types and erases each role in turn
+   ============================================================ */
+(() => {
+  const typed = document.getElementById("typed");
+  if (!typed) return;
+
+  const roles = CONFIG.typewriterRoles;
+
+  if (prefersReducedMotion) {
+    typed.textContent = roles[0]; // static fallback
+    return;
+  }
+
   let roleIndex = 0;
   let charIndex = 0;
   let deleting = false;
+
+  const TYPE_MS = 90;
+  const ERASE_MS = 45;
+  const HOLD_MS = 1600;
 
   const tick = () => {
     const word = roles[roleIndex];
 
     if (!deleting) {
-      charIndex++;
+      charIndex += 1;
       typed.textContent = word.slice(0, charIndex);
       if (charIndex === word.length) {
         deleting = true;
-        setTimeout(tick, 1600);
+        setTimeout(tick, HOLD_MS);
         return;
       }
-      setTimeout(tick, 90);
+      setTimeout(tick, TYPE_MS);
     } else {
-      charIndex--;
+      charIndex -= 1;
       typed.textContent = word.slice(0, charIndex);
       if (charIndex === 0) {
         deleting = false;
         roleIndex = (roleIndex + 1) % roles.length;
       }
-      setTimeout(tick, 45);
+      setTimeout(tick, ERASE_MS);
     }
   };
 
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    typed.textContent = roles[0];
-  } else {
-    tick();
-  }
-}
+  tick();
+})();
 
-/* ---------- 4) Lanyard ID card physics ---------- */
-/*
-   Pivot = top of the lanyard. Drag rotates the card toward your
-   pointer; release triggers a damped spring back to center.
+/* ============================================================
+   4. Lanyard ID card — drag physics + click to flip
+   ------------------------------------------------------------
+   The whole assembly pivots at the lanyard's top. Dragging
+   rotates it toward the pointer AND lets you pull it up/down;
+   releasing hands control to two damped springs (one for
+   rotation, one for vertical stretch) that swing it home.
 
-   DIRECTION NOTE (the bug we fixed): in screen coordinates a
-   positive CSS rotation is CLOCKWISE, which swings an object
-   hanging BELOW the pivot to the LEFT. So to make the card follow
-   the pointer, the angle must be NEGATED: pointer left of pivot
-   (dx < 0) → positive rotation → card bottom swings left. ✔
-*/
-const badgeWrap = document.getElementById("badgeWrap");
-const badge = document.getElementById("badge");
+   Rotation sign: positive CSS rotation is CLOCKWISE, which
+   moves a hanging object's bottom to the LEFT — so the angle
+   from atan2 must be negated for the card to follow the hand.
+   ============================================================ */
+(() => {
+  const wrap = document.getElementById("badgeWrap");
+  const badge = document.getElementById("badge");
+  if (!wrap || !badge) return;
 
-if (badgeWrap && badge) {
-  let angle = 0;
-  let velocity = 0;
-  let ty = 0;            // vertical offset (drag up/down)
-  let tyVel = 0;         // vertical spring velocity
+  /* physics state */
+  let angle = 0, angleVel = 0;   // rotation spring
+  let ty = 0, tyVel = 0;         // vertical spring
   let dragging = false;
-  let pivotX = 0;
-  let pivotY = 0;
-  let grabY = 0;         // pointer Y at grab time
-  let baseTy = 0;
-  let moved = 0;
+  let pivotX = 0, pivotY = 0;
+  let grabY = 0, baseTy = 0;
+  let pointerTravel = 0;         // distinguishes click from drag
   let rafId = null;
 
-  const setTransform = () => {
-    badgeWrap.style.transform = `translateY(${ty}px) rotate(${angle}deg)`;
+  const CLICK_THRESHOLD = 8;     // px of travel below which it's a "click"
+  const MAX_ANGLE = 70;          // deg
+  const PULL_RANGE = { up: -60, down: 170 }; // px
+
+  const applyTransform = () => {
+    wrap.style.transform = `translateY(${ty}px) rotate(${angle}deg)`;
   };
 
-  const stopIdleSway = () => badgeWrap.classList.add("held");
-  const startIdleSway = () => {
-    badgeWrap.classList.remove("held");
-    badgeWrap.style.transform = "";
+  const pauseIdleSway = () => wrap.classList.add("held");
+  const resumeIdleSway = () => {
+    wrap.classList.remove("held");
+    wrap.style.transform = "";
   };
 
-  /* two independent springs: one for rotation, one for vertical pull */
   const springBack = () => {
-    velocity += -0.06 * angle;
-    velocity *= 0.92;
-    angle += velocity;
+    angleVel += -0.06 * angle;   // spring force toward 0
+    angleVel *= 0.92;            // damping
+    angle += angleVel;
 
     tyVel += -0.08 * ty;
     tyVel *= 0.88;
     ty += tyVel;
 
-    setTransform();
+    applyTransform();
 
     const settled =
-      Math.abs(angle) < 0.3 && Math.abs(velocity) < 0.3 &&
+      Math.abs(angle) < 0.3 && Math.abs(angleVel) < 0.3 &&
       Math.abs(ty) < 0.5 && Math.abs(tyVel) < 0.5;
 
-    if (!settled) {
-      rafId = requestAnimationFrame(springBack);
+    if (settled) {
+      angle = angleVel = ty = tyVel = 0;
+      rafId = null;
+      resumeIdleSway();
     } else {
-      angle = 0; velocity = 0; ty = 0; tyVel = 0;
-      startIdleSway();
+      rafId = requestAnimationFrame(springBack);
     }
   };
 
@@ -143,35 +233,35 @@ if (badgeWrap && badge) {
     e.preventDefault();
     badge.setPointerCapture(e.pointerId);
     dragging = true;
-    moved = 0;
+    pointerTravel = 0;
     grabY = e.clientY;
     baseTy = ty;
 
     if (rafId) cancelAnimationFrame(rafId);
-    stopIdleSway();
+    pauseIdleSway();
 
-    const rect = badgeWrap.getBoundingClientRect();
+    const rect = wrap.getBoundingClientRect();
     pivotX = rect.left + rect.width / 2;
-    pivotY = rect.top - ty; // pivot in "resting" coordinates
-    setTransform();
+    pivotY = rect.top - ty; // pivot in resting coordinates
+    applyTransform();
   });
 
   badge.addEventListener("pointermove", (e) => {
     if (!dragging) return;
-    moved += Math.abs(e.movementX) + Math.abs(e.movementY);
+    pointerTravel += Math.abs(e.movementX) + Math.abs(e.movementY);
 
-    /* vertical pull — like stretching the lanyard */
+    /* vertical pull, like stretching the lanyard */
     const prevTy = ty;
-    ty = Math.max(-60, Math.min(170, baseTy + (e.clientY - grabY)));
+    ty = Math.max(PULL_RANGE.up, Math.min(PULL_RANGE.down, baseTy + (e.clientY - grabY)));
     tyVel = ty - prevTy;
 
-    /* rotation toward the pointer (sign negated — see note above) */
+    /* rotation toward the pointer (negated — see note above) */
     const dx = e.clientX - pivotX;
-    const dy = Math.max(e.clientY - pivotY, 40);
-    const prev = angle;
-    angle = -Math.max(-70, Math.min(70, (Math.atan2(dx, dy) * 180) / Math.PI));
-    velocity = angle - prev;
-    setTransform();
+    const dy = Math.max(e.clientY - pivotY, 40); // avoid wild flips near pivot
+    const prevAngle = angle;
+    angle = -Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, (Math.atan2(dx, dy) * 180) / Math.PI));
+    angleVel = angle - prevAngle; // carry momentum into the release
+    applyTransform();
   });
 
   const release = (e) => {
@@ -179,7 +269,7 @@ if (badgeWrap && badge) {
     dragging = false;
     badge.releasePointerCapture?.(e.pointerId);
 
-    if (moved < 8) {
+    if (pointerTravel < CLICK_THRESHOLD) {
       badge.classList.toggle("flipped");
     }
     rafId = requestAnimationFrame(springBack);
@@ -188,6 +278,7 @@ if (badgeWrap && badge) {
   badge.addEventListener("pointerup", release);
   badge.addEventListener("pointercancel", release);
 
+  /* keyboard access: Enter / Space flips the card */
   badge.setAttribute("tabindex", "0");
   badge.setAttribute("role", "button");
   badge.setAttribute("aria-label", "ID card — press Enter to flip");
@@ -197,69 +288,74 @@ if (badgeWrap && badge) {
       badge.classList.toggle("flipped");
     }
   });
-}
+})();
 
-/* ---------- 5) Eyes track the cursor ---------- */
-/*
-   For each pupil: find its eye's center on screen (viewBox coords
-   scaled to the rendered SVG size), point a tiny vector toward the
-   cursor, clamp it so the pupil stays inside the glasses lens.
-*/
-const charSvg = document.querySelector(".badge-char");
-const pupils = charSvg ? charSvg.querySelectorAll(".pupil") : [];
+/* ============================================================
+   5. Eye tracking — the badge character watches the cursor
+   ============================================================ */
+(() => {
+  const svg = document.querySelector(".badge-char");
+  if (!svg) return;
+  const pupils = svg.querySelectorAll(".pupil");
+  if (!pupils.length) return;
 
-if (pupils.length) {
   const VIEW_W = 126;
   const VIEW_H = 118;
   const MAX_SHIFT = 2.6; // viewBox units — keeps pupils inside the lens
 
   document.addEventListener("pointermove", (e) => {
-    const rect = charSvg.getBoundingClientRect();
+    const rect = svg.getBoundingClientRect();
     if (!rect.width) return;
-    const scaleX = rect.width / VIEW_W;
-    const scaleY = rect.height / VIEW_H;
 
     pupils.forEach((pupil) => {
-      const eyeX = rect.left + Number(pupil.dataset.cx) * scaleX;
-      const eyeY = rect.top + Number(pupil.dataset.cy) * scaleY;
+      const eyeX = rect.left + Number(pupil.dataset.cx) * (rect.width / VIEW_W);
+      const eyeY = rect.top + Number(pupil.dataset.cy) * (rect.height / VIEW_H);
       const dx = e.clientX - eyeX;
       const dy = e.clientY - eyeY;
       const dist = Math.hypot(dx, dy) || 1;
-      const ux = (dx / dist) * MAX_SHIFT;
-      const uy = (dy / dist) * MAX_SHIFT;
-      pupil.setAttribute("transform", `translate(${ux.toFixed(2)}, ${uy.toFixed(2)})`);
+      pupil.setAttribute(
+        "transform",
+        `translate(${((dx / dist) * MAX_SHIFT).toFixed(2)}, ${((dy / dist) * MAX_SHIFT).toFixed(2)})`
+      );
     });
   });
-}
+})();
 
-/* ---------- 6) Draw on the background ---------- */
-/*
-   Two layers:
-   - an OFFSCREEN "art" canvas holds everything permanent
-     (finished strokes + dried paint splatter)
-   - the VISIBLE canvas shows art + any live particles
+/* ============================================================
+   6. Background sketch layer
+   ------------------------------------------------------------
+   Two canvases:
+     - "art" (offscreen) holds permanent ink: strokes + dried splats
+     - the visible canvas shows art + any live explosion particles
 
-   Every new stroke gets the next color from the palette.
-   A click (press with almost no movement) on empty space
-   triggers a pigment explosion: particles burst outward,
-   and where each one dies it stamps a splat into the art.
-*/
-const canvas = document.getElementById("drawCanvas");
+   Every stroke cycles to the next pen color. A click on empty
+   space (a press that barely moves) bursts into particles that
+   stamp splatter into the art where they land.
 
-if (canvas) {
+   BUGFIX: each stroke segment is drawn as its own isolated path
+   (beginPath → moveTo(last) → lineTo(now)). Previously the
+   stroke shared one long-lived path with the particle splats,
+   so a splat's arc() hijacked the current point and the next
+   segment shot out from the explosion — the "fan of lines" bug.
+   ============================================================ */
+(() => {
+  const canvas = document.getElementById("drawCanvas");
+  if (!canvas) return;
+
   const ctx = canvas.getContext("2d");
   const art = document.createElement("canvas");
   const artCtx = art.getContext("2d");
 
-  const PALETTE = ["#ff6a5c", "#2c4fd8", "#17a34a", "#8b5cf6", "#f59e0b", "#ec4899", "#171a2b"];
   let colorIndex = 0;
-  let strokeColor = PALETTE[0];
-
+  let strokeColor = CONFIG.penColors[0];
   let drawing = false;
-  let strokeMoved = 0;
-  let downPoint = null;
+  let lastPoint = null;   // previous stroke point (the bugfix anchor)
+  let strokeTravel = 0;
+  let pressPoint = null;
   const particles = [];
   let rafId = null;
+
+  const CLICK_THRESHOLD = 6; // px — below this, a press counts as a click
 
   const blit = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -267,6 +363,7 @@ if (canvas) {
   };
 
   const resize = () => {
+    /* preserve the existing drawing through a resize */
     const snapshot = document.createElement("canvas");
     snapshot.width = art.width || 1;
     snapshot.height = art.height || 1;
@@ -284,8 +381,8 @@ if (canvas) {
   resize();
   window.addEventListener("resize", resize);
 
-  /* --- particle explosion --- */
-  const explode = (x, y, color) => {
+  /* --- explosion particles --- */
+  const spawnExplosion = (x, y, color) => {
     const count = 26 + Math.floor(Math.random() * 10);
     for (let i = 0; i < count; i++) {
       const dir = Math.random() * Math.PI * 2;
@@ -293,13 +390,14 @@ if (canvas) {
       particles.push({
         x, y,
         vx: Math.cos(dir) * speed,
-        vy: Math.sin(dir) * speed - 2,      // slight upward kick
+        vy: Math.sin(dir) * speed - 2, // slight upward kick
         r: 2 + Math.random() * 4,
         life: 30 + Math.random() * 30,
         color,
       });
     }
-    /* stamp a central blob immediately — the "impact" */
+
+    /* the impact blob, stamped immediately */
     artCtx.fillStyle = color;
     artCtx.beginPath();
     artCtx.arc(x, y, 7 + Math.random() * 5, 0, Math.PI * 2);
@@ -310,13 +408,14 @@ if (canvas) {
 
   const animateParticles = () => {
     blit();
+
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.18;      // gravity
-      p.vx *= 0.99;      // air drag
-      p.life--;
+      p.vy += 0.18;   // gravity
+      p.vx *= 0.99;   // air drag
+      p.life -= 1;
       p.r *= 0.985;
 
       ctx.fillStyle = p.color;
@@ -324,7 +423,7 @@ if (canvas) {
       ctx.arc(p.x, p.y, Math.max(p.r, 0.5), 0, Math.PI * 2);
       ctx.fill();
 
-      /* particle dies → dried splat joins the permanent art */
+      /* a dead particle dries into permanent splatter */
       if (p.life <= 0) {
         artCtx.fillStyle = p.color;
         artCtx.beginPath();
@@ -342,54 +441,55 @@ if (canvas) {
     }
   };
 
-  const isInteractive = (target) =>
-    target.closest("a, button, input, textarea, .badge, .nav, .draw-ui, .chip, .ic, .pcb-board, .ic-tray");
-
+  /* --- pointer handling --- */
   document.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
-    if (isInteractive(e.target)) return;
+    if (e.target.closest(INTERACTIVE_SELECTOR)) return;
 
-    /* SELECTION FIX: stop the browser from starting a text selection
-       when a stroke begins over text — preventDefault cancels the
-       native mousedown behavior, the body class blocks selection for
-       the whole stroke, and any half-made selection is cleared */
+    /* stop the browser from starting a text selection mid-stroke */
     e.preventDefault();
     document.body.classList.add("no-select");
     window.getSelection?.().removeAllRanges();
 
     drawing = true;
-    strokeMoved = 0;
-    downPoint = { x: e.clientX, y: e.clientY };
+    strokeTravel = 0;
+    pressPoint = { x: e.clientX, y: e.clientY };
+    lastPoint = pressPoint;
 
-    /* every stroke/click gets the next color in the cycle */
-    strokeColor = PALETTE[colorIndex % PALETTE.length];
-    colorIndex++;
-    artCtx.strokeStyle = strokeColor;
-
-    artCtx.beginPath();
-    artCtx.moveTo(e.clientX, e.clientY);
+    strokeColor = CONFIG.penColors[colorIndex % CONFIG.penColors.length];
+    colorIndex += 1;
   });
 
   document.addEventListener("pointermove", (e) => {
     if (!drawing) return;
-    strokeMoved += Math.abs(e.movementX) + Math.abs(e.movementY);
-    artCtx.lineTo(e.clientX, e.clientY);
+    strokeTravel += Math.abs(e.movementX) + Math.abs(e.movementY);
+
+    /* each segment is its own path — immune to particle splats */
+    const point = { x: e.clientX, y: e.clientY };
+    artCtx.strokeStyle = strokeColor;
+    artCtx.beginPath();
+    artCtx.moveTo(lastPoint.x, lastPoint.y);
+    artCtx.lineTo(point.x, point.y);
     artCtx.stroke();
-    if (!rafId) blit();   // particles already blit each frame
+    lastPoint = point;
+
+    if (!rafId) blit(); // the particle loop already blits every frame
   });
 
-  const stopDrawing = () => {
+  const endStroke = () => {
     document.body.classList.remove("no-select");
     if (!drawing) return;
     drawing = false;
-    /* barely moved = a click → pigment explosion! */
-    if (strokeMoved < 6 && downPoint) {
-      explode(downPoint.x, downPoint.y, strokeColor);
+
+    /* barely moved = a click → pigment explosion */
+    if (strokeTravel < CLICK_THRESHOLD && pressPoint) {
+      spawnExplosion(pressPoint.x, pressPoint.y, strokeColor);
     }
-    downPoint = null;
+    pressPoint = null;
+    lastPoint = null;
   };
-  document.addEventListener("pointerup", stopDrawing);
-  document.addEventListener("pointercancel", stopDrawing);
+  document.addEventListener("pointerup", endStroke);
+  document.addEventListener("pointercancel", endStroke);
 
   const clearBtn = document.getElementById("clearDraw");
   if (clearBtn) {
@@ -399,92 +499,62 @@ if (canvas) {
       blit();
     });
   }
-}
+})();
 
-/* ---------- 7) PCB skill lab (about page) ---------- */
-/*
-   12 skill ICs, 6 sockets. Drag an IC from the tray onto any empty
-   socket; drag it off to return it to the tray. The CPU reads which
-   CATEGORIES are plugged in and prints the matching job title.
+/* ============================================================
+   7. Dev-board skill game (about page)
+   ------------------------------------------------------------
+   Drag skill ICs from the tray into board sockets; the LCD reads
+   which categories are plugged in and prints the matching title.
+   ============================================================ */
+(() => {
+  const board = document.getElementById("pcbBoard");
+  const tray = document.getElementById("icTray");
+  const lcdTitle = document.getElementById("chipTitle");
+  const lcdSub = document.getElementById("chipSub");
+  if (!board || !tray || !lcdTitle) return;
 
-   Categories: HW (hardware), SW (software), CLOUD, EMB (embedded).
-*/
-const pcbBoard = document.getElementById("pcbBoard");
-const icTray = document.getElementById("icTray");
-const chipTitle = document.getElementById("chipTitle");
-const chipSub = document.getElementById("chipSub");
+  const sockets = [...board.querySelectorAll(".socket")];
 
-if (pcbBoard && icTray && chipTitle) {
-  /* PLACEHOLDER: edit labels/categories/shapes freely.
-     shapes (all horizontal-readable): h = wide, sq = square, s = small rect */
-  const SKILLS = [
-    { label: "VERILOG",   cat: "HW",    shape: "h"  },
-    { label: "VHDL",      cat: "HW",    shape: "s"  },
-    { label: "PCB",       cat: "HW",    shape: "sq" },
-    { label: "RF",        cat: "HW",    shape: "s"  },
-    { label: "PYTHON",    cat: "SW",    shape: "h"  },
-    { label: "C/C++",     cat: "SW",    shape: "s"  },
-    { label: "JAVA",      cat: "SW",    shape: "sq" },
-    { label: "REACT",     cat: "SW",    shape: "s"  },
-    { label: "SQL",       cat: "SW",    shape: "sq" },
-    { label: "AWS",       cat: "CLOUD", shape: "s"  },
-    { label: "DOCKER",    cat: "CLOUD", shape: "h"  },
-    { label: "SNOWFLAKE", cat: "CLOUD", shape: "h"  },
-    { label: "ESP32",     cat: "EMB",   shape: "sq" },
-    { label: "FreeRTOS",  cat: "EMB",   shape: "h"  },
-    { label: "SPI·I2C",   cat: "EMB",   shape: "s"  },
-    { label: "EDGE AI",   cat: "EMB",   shape: "sq" },
-  ];
-
-  const sockets = [...pcbBoard.querySelectorAll(".socket")];
-
-  /* build the ICs into the tray */
-  SKILLS.forEach((skill) => {
+  /* build the ICs into the tray from CONFIG */
+  CONFIG.skills.forEach((skill) => {
     const ic = document.createElement("div");
     ic.className = `ic ic--${skill.shape}`;
     ic.dataset.cat = skill.cat;
     ic.textContent = skill.label;
-    icTray.appendChild(ic);
+    tray.appendChild(ic);
   });
 
-  /* --- title logic --- */
-  const SOLO = {
-    HW: "HARDWARE ENGINEER",
-    SW: "SOFTWARE ENGINEER",
-    CLOUD: "CLOUD ENGINEER",
-    EMB: "EMBEDDED ENGINEER",
-  };
-  const PAIRS = {
-    "EMB+HW": "FIRMWARE ENGINEER",
-    "CLOUD+SW": "FULL-STACK ENGINEER",
-    "HW+SW": "COMPUTER ENGINEER",
-    "EMB+SW": "EMBEDDED SW ENGINEER",
-    "CLOUD+EMB": "IoT ENGINEER",
-    "CLOUD+HW": "SYSTEMS ENGINEER",
-  };
-
-  const updateChip = () => {
+  /* --- LCD title logic --- */
+  const updateLcd = () => {
     const placed = sockets.filter((s) => s.querySelector(".ic"));
     const cats = new Set(placed.map((s) => s.querySelector(".ic").dataset.cat));
+    const T = CONFIG.titles;
 
     let title;
-    if (cats.size === 0) title = "PLUG IN SKILL ICs";
-    else if (cats.size === 1) title = SOLO[[...cats][0]];
-    else if (cats.size === 2) title = PAIRS[[...cats].sort().join("+")];
-    else if (cats.size === 3) title = "SYSTEMS ENGINEER";
-    else title = "SYSTEMS ARCHITECT 🏆";
+    if (cats.size === 0) title = T.empty;
+    else if (cats.size === 1) title = T.solo[[...cats][0]];
+    else if (cats.size === 2) title = T.pairs[[...cats].sort().join("+")];
+    else if (cats.size === 3) title = T.threeCats;
+    else title = T.fourCats;
 
-    if (chipTitle.textContent !== title) {
-      chipTitle.textContent = title;
-      chipTitle.classList.remove("flash");
-      void chipTitle.offsetWidth;        // restart the flash animation
-      chipTitle.classList.add("flash");
+    if (lcdTitle.textContent !== title) {
+      lcdTitle.textContent = title;
+      lcdTitle.classList.remove("flash");
+      void lcdTitle.offsetWidth; // restart the flash animation
+      lcdTitle.classList.add("flash");
     }
-    chipSub.textContent = `${placed.length}/${sockets.length} sockets`;
+    lcdSub.textContent = `${placed.length}/${sockets.length} sockets`;
   };
 
   /* --- drag & drop --- */
   let held = null;
+
+  const socketUnder = (x, y) =>
+    sockets.find((s) => {
+      const r = s.getBoundingClientRect();
+      return x > r.left && x < r.right && y > r.top && y < r.bottom;
+    });
 
   const grab = (e) => {
     const ic = e.target.closest(".ic");
@@ -494,31 +564,31 @@ if (pcbBoard && icTray && chipTitle) {
     ic.setPointerCapture(e.pointerId);
     ic.classList.add("dragging");
 
-    /* lift it out of tray/socket onto the page so nothing clips it */
+    /* lift it onto the page layer so nothing clips it while moving */
     const r = ic.getBoundingClientRect();
     document.body.appendChild(ic);
-    ic.style.position = "fixed";
-    ic.style.left = `${r.left}px`;
-    ic.style.top = `${r.top}px`;
-    ic.style.margin = "0";
-    ic.style.transform = "none";
-    updateChip();                        // socket it left is now empty
-    moveTo(e);
+    Object.assign(ic.style, {
+      position: "fixed",
+      left: `${r.left}px`,
+      top: `${r.top}px`,
+      margin: "0",
+      transform: "none",
+    });
+
+    updateLcd(); // the socket it left is now empty
+    follow(e);
   };
 
-  const moveTo = (e) => {
+  const follow = (e) => {
     if (!held) return;
     held.style.left = `${e.clientX - held.offsetWidth / 2}px`;
     held.style.top = `${e.clientY - held.offsetHeight / 2}px`;
 
-    /* highlight the empty socket under the pointer */
-    sockets.forEach((s) => {
-      const r = s.getBoundingClientRect();
-      const over =
-        e.clientX > r.left && e.clientX < r.right &&
-        e.clientY > r.top && e.clientY < r.bottom;
-      s.classList.toggle("hot", over && !s.querySelector(".ic"));
-    });
+    /* glow the empty socket under the pointer */
+    const hover = socketUnder(e.clientX, e.clientY);
+    sockets.forEach((s) =>
+      s.classList.toggle("hot", s === hover && !s.querySelector(".ic"))
+    );
   };
 
   const drop = (e) => {
@@ -528,32 +598,21 @@ if (pcbBoard && icTray && chipTitle) {
     ic.classList.remove("dragging");
     ic.releasePointerCapture?.(e.pointerId);
 
-    /* find an empty socket under the pointer */
-    const target = sockets.find((s) => {
-      const r = s.getBoundingClientRect();
-      return (
-        e.clientX > r.left && e.clientX < r.right &&
-        e.clientY > r.top && e.clientY < r.bottom &&
-        !s.querySelector(".ic")
-      );
-    });
+    const target = socketUnder(e.clientX, e.clientY);
+    const seatIn = target && !target.querySelector(".ic") ? target : tray;
 
-    /* reset inline positioning, then seat it */
-    ic.style.position = "";
-    ic.style.left = "";
-    ic.style.top = "";
-    ic.style.transform = "";
+    Object.assign(ic.style, { position: "", left: "", top: "", transform: "" });
+    seatIn.appendChild(ic);
 
-    (target || icTray).appendChild(ic);
     sockets.forEach((s) => s.classList.remove("hot"));
-    updateChip();
+    updateLcd();
   };
 
-  icTray.addEventListener("pointerdown", grab);
-  pcbBoard.addEventListener("pointerdown", grab);
-  document.addEventListener("pointermove", moveTo);
+  tray.addEventListener("pointerdown", grab);
+  board.addEventListener("pointerdown", grab);
+  document.addEventListener("pointermove", follow);
   document.addEventListener("pointerup", drop);
   document.addEventListener("pointercancel", drop);
 
-  updateChip();
-}
+  updateLcd();
+})();

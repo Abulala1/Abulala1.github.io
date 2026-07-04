@@ -1,26 +1,27 @@
 # Aaron — Computer Engineering Portfolio
 
-Personal portfolio of **Aaron** — Computer Engineering student at
-**Georgia Tech** (B.S., expected May 2027) working across the full
-stack: FPGA/RTL design, embedded systems, and cloud/AI software.
+Personal portfolio of **Aaron Wong** — Computer Engineering student at
+**Georgia Tech** (B.S., expected May 2027), focused on **hardware–software
+integration**: digital design and custom PCBs on one side, embedded AI,
+cloud services, and thoughtful interfaces on the other.
 
-**Live site:** https://your-handle.github.io <!-- PLACEHOLDER: update -->
+**Live site:** https://abulala1.github.io/mywebsite/
 
 ---
 
-## 👋 About Aaron
+## 👋 About
 
-- 🎓 **Georgia Institute of Technology** — B.S. Computer Engineering (Jan 2025 – May 2027)
-- 🔬 **Student Research Assistant** — architected and built a custom **NMR spectrometer**
-  from the ground up: Verilog pulse sequences on an Altera DE0-Nano FPGA capturing
-  CPMG spin-echo signals, RF-shielded analog signal paths, and a fully custom PCB
-- 💼 **Software Engineer Intern @ Yakin ICT Technology** (May – Aug 2025) —
-  fault-tolerant data pipelines migrating legacy systems to AWS; Docker-based deployment
-- 🏅 **Research Computing Fellow, Google exploreCSR** (2024) — Edge AI and real-time
+- 🎓 **Georgia Institute of Technology** — B.S. Computer Engineering (expected May 2027);
+  previously A.S. Engineering, San Antonio College
+- 🔬 **Student Research Assistant** — building a custom **NMR spectrometer** from the
+  ground up: Verilog pulse sequences on an FPGA, an RF-shielded analog front-end,
+  and a fully custom PCB *(ongoing)*
+- 💼 **Software Engineer Intern @ Yakin ICT Technology** — fault-tolerant data
+  pipelines migrating legacy systems to AWS; Docker-based deployment
+- 🏅 **Research Computing Fellow, Google exploreCSR** — Edge AI and real-time
   graphics on the NVIDIA Jetson Nano
-- 🏆 **Hackathon wins:** *Best Use of Snowflake* (WanderLore, QuackHack 3.0) and
+- 🏆 **Hackathon wins:** *Best Use of Snowflake* (WanderLore, QuackHack 3.0);
   *Best Use of Gemini API + Best Use of Vultr* (VibeCheck, DesignVerse 2026)
-- 🎓 Previously: A.S. Engineering, San Antonio College — **GPA 4.0**
 
 ## 🛠 Core skills
 
@@ -36,53 +37,51 @@ stack: FPGA/RTL design, embedded systems, and cloud/AI software.
 
 ## 📁 Featured projects
 
-<!-- PLACEHOLDER: update repo links -->
-| Project | What it is |
-| --- | --- |
-| **DIY NMR Spectrometer** | Ground-up NMR instrument: FPGA pulse sequences, RF shielding, custom PCB |
-| **SCOMP Arithmetic Accelerator** | Hardware 16-bit multiply/divide peripheral in pure combinational VHDL |
-| **Embedded Edge AI System** | Multi-threaded FreeRTOS app on ESP32-S3: on-device inference + BLE + Wi-Fi UI |
-| **Crazy Dave** | AI bio-acoustic garden defense using a repurposed Google Home Mini |
-| **WanderLore** 🏆 | Event-driven LLM orchestration via Snowflake Cortex (QuackHack 3.0 winner) |
-| **VibeCheck** 🏆 | Full-stack 3D interior design app: React + Three.js + Gemini (DesignVerse winner) |
+| Project | What it is | Link |
+| --- | --- | --- |
+| **Custom NMR Spectrometer** | Ground-up NMR instrument: FPGA pulse-sequence RTL, RF-shielded front-end, custom PCB | *ongoing research* |
+| **SCOMP Arithmetic Accelerator** | Hardware 16-bit multiply/divide peripheral in pure combinational VHDL | coursework |
+| **Embedded Edge AI System** | Multi-threaded FreeRTOS app on ESP32-S3: on-device inference, BLE, thread-safe pipelines | personal build |
+| **Crazy Dave** 🌱 | AI bio-acoustic garden defense on a repurposed Google Home Mini | [Devpost](https://devpost.com/software/crazy-dave) |
+| **WanderLore** 🏆 | Event-driven LLM orchestration via Snowflake Cortex — QuackHack 3.0 winner | [GitHub](https://github.com/Abulala1/wanderlor) |
+| **VibeCheck** 🏆 | Full-stack 3D interior design app: React + Three.js + Gemini — DesignVerse winner | [GitHub](https://github.com/Abulala1/vibecheck-hackathon) |
 
 ---
 
 ## ✨ About this site
 
-Built with **plain HTML, CSS, and vanilla JavaScript** — no frameworks,
-no build step — and hosted free on **GitHub Pages**. A few things worth
-poking at:
+Built with **plain HTML, CSS, and vanilla JavaScript** — no frameworks, no
+build step — and hosted free on **GitHub Pages**. Things worth poking at:
 
-- **Interactive lanyard ID card** — drag it (it swings with real pendulum-spring
-  physics, in rotation *and* vertical stretch), click it to flip and reveal info
-- **Character with cursor-tracking eyes** — the doodle on the badge watches your mouse
-- **Sketch layer** — draw anywhere on the page background; every stroke cycles to a
-  new color, and a single click bursts into a paint-splatter particle explosion
-- **DE10-style skill board** — drag skill "ICs" into sockets on a dev board modeled
-  after the Terasic DE10; the LCD computes a job title (hardware / software / cloud /
-  embedded / full-stack…) from the combination you build
-- Typewriter intro, hand-drawn "boiling" letter animation, scroll-reveal sections,
-  keyboard-accessible card flip, and `prefers-reduced-motion` support
+- **Interactive lanyard ID card** — drag it (pendulum-spring physics in rotation
+  *and* vertical stretch), click to flip for info; keyboard-accessible
+- **A character whose eyes follow your cursor**
+- **Sketch layer** — draw anywhere on the background; strokes cycle colors, and a
+  single click bursts into a paint-splatter particle explosion
+- **Dev-board skill game** — drag skill "ICs" into sockets on a custom dev board;
+  the LCD computes a job title from the combination you build
+- Typewriter intro, hand-drawn "boiling" letters, scroll-reveal, and
+  `prefers-reduced-motion` support throughout
 
-### Tech used to build it
+**Techniques:** Pointer Events drag & drop, Canvas 2D with a two-layer draw
+buffer + particle system, spring physics via `requestAnimationFrame`,
+IntersectionObserver, CSS 3D transforms and `steps()` frame animation.
 
-- Semantic **HTML5**, custom **CSS** (grid, 3D transforms, `steps()` frame
-  animation, CSS variables for theming)
-- **Vanilla JS**: Pointer Events drag & drop, Canvas 2D (two-layer draw buffer +
-  particle system), IntersectionObserver, spring physics via `requestAnimationFrame`
-- **Fonts:** Archivo Black, Space Grotesk, IBM Plex Mono (Google Fonts)
-- **Hosting:** GitHub Pages (free)
+## 🔧 Maintaining the site
 
-## 🚀 Run locally
+The site is deliberately easy to update:
 
-1. Clone the repo, open the folder in VS Code
-2. Install the **Live Server** extension and open `index.html` with it
-   (or just double-click `index.html`)
+- **Words & content** → edit the HTML files directly; sections are labeled
+  with comments
+- **Typewriter roles, pen colors, skill ICs, and LCD titles** → all live in the
+  `CONFIG` object at the top of `main.js` — plain data, no code changes needed
+- **Colors & theme** → the CSS variables in `:root` at the top of `style.css`
+  recolor everything at once
+- **Run locally** → open the folder in VS Code, install the *Live Server*
+  extension, right-click `index.html` → *Open with Live Server*
 
 ## 📫 Contact
 
-<!-- PLACEHOLDER: update -->
-- Email: hello@example.com
-- LinkedIn: https://www.linkedin.com/in/your-handle
-- GitHub: https://github.com/your-handle
+- Email: [aaronyewsingwong@gmail.com](mailto:aaronyewsingwong@gmail.com)
+- LinkedIn: [linkedin.com/in/aaron-w-1886972a1](https://www.linkedin.com/in/aaron-w-1886972a1/)
+- GitHub: [github.com/Abulala1](https://github.com/Abulala1)

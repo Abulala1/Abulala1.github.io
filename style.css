@@ -1,8 +1,16 @@
 /* ============================================================
-   ELLA — Personal Portfolio
-   Theme: "data notebook" — graph-paper grid, plot-blue ink,
-   coral data markers. Fonts: Archivo Black / Space Grotesk /
-   IBM Plex Mono.
+   AARON — portfolio stylesheet
+   ------------------------------------------------------------
+   THEME: edit the CSS variables in :root below to recolor the
+   entire site (the character, card, board, and buttons all
+   inherit from them).
+
+   SECTIONS (in order):
+     :root variables · base · navigation · layout helpers ·
+     hero (typewriter, boiling name, lanyard card, character) ·
+     buttons · project cards · about grid · contact ·
+     scroll-reveal · footer · sketch layer · dev-board skill
+     game · responsive · reduced motion
    ============================================================ */
 
 :root {
@@ -148,30 +156,6 @@ h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
   margin: 1rem auto 2rem;
 }
 
-/* draggable chips */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-  margin-bottom: 2.5rem;
-}
-
-.chip {
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.9rem;
-  padding: 0.45rem 0.95rem;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  background: var(--card);
-  cursor: grab;
-  box-shadow: 3px 3px 0 var(--ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  touch-action: none;
-}
-.chip:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--coral); }
-.chip.dragging { cursor: grabbing; position: relative; z-index: 10; }
-
 .scroll-cue {
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.8rem;
@@ -182,18 +166,6 @@ h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
 }
-
-/* scatter-dot decoration */
-.dot {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid var(--ink);
-}
-.dot--coral { background: var(--coral); }
-.dot--blue { background: var(--blue); }
-.dot--paper { background: var(--card); }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -253,22 +225,6 @@ h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
   grid-template-columns: 1fr 1.4fr;
   gap: 2.5rem;
   align-items: start;
-}
-
-.portrait {
-  border: 2px solid var(--ink);
-  border-radius: var(--radius);
-  box-shadow: 6px 6px 0 var(--ink);
-  background: var(--card);
-  aspect-ratio: 4 / 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.85rem;
-  color: var(--blue);
-  text-align: center;
-  padding: 1rem;
 }
 
 .timeline { list-style: none; margin-top: 1rem; }
