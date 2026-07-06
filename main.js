@@ -51,6 +51,15 @@ const CONFIG = {
     { label: "EDGE AI",   cat: "EMB",   shape: "sq" },
   ],
 
+  /* the "Say hi" counter on the ID card back.
+     Uses the free Abacus counter API (abacus.jasoncameron.dev) —
+     no account needed; the namespace/key pair just has to be unique
+     to this site. If the API is unreachable the counter hides itself. */
+  hiCounter: {
+    namespace: "aaron-abulala1-portfolio",
+    key: "say-hi",
+  },
+
   /* job titles the LCD shows, based on which categories are plugged in */
   titles: {
     empty: "PLUG IN SKILL ICs",
@@ -615,4 +624,62 @@ const prefersReducedMotion =
   document.addEventListener("pointercancel", drop);
 
   updateLcd();
+})();
+
+/* ============================================================
+   8. "Say hi" counter (ID card back)
+   ------------------------------------------------------------
+   A shared, global click count needs a server; since this site
+   is static, we use the free Abacus counter API:
+     GET .../get/{ns}/{key}  → read the count (404 until first hit)
+     GET .../hit/{ns}/{key}  → increment and return the count
+   One hi per browser (remembered in localStorage) to keep the
+   number honest. If the API is unreachable, the count line
+   simply stays hidden and nothing breaks.
+   ============================================================ */
+(() => {
+  const btn = document.getElementById("sayHiBtn");
+  const label = document.getElementById("hiCount");
+  if (!btn || !label) return;
+
+  const { namespace, key } = CONFIG.hiCounter;
+  const BASE = "https://abacus.jasoncameron.dev";
+  const GET_URL = `${BASE}/get/${namespace}/${key}`;
+  const HIT_URL = `${BASE}/hit/${namespace}/${key}`;
+  const STORAGE_KEY = "aaron-said-hi";
+
+  const showCount = (n) => {
+    label.textContent =
+      n === 1 ? "1 person said hi" : `${n.toLocaleString()} people said hi`;
+  };
+
+  const markSaid = () => {
+    btn.textContent = "You said hi! 🎉";
+    btn.disabled = true;
+  };
+
+  /* keep the card's flip/drag physics from hijacking button presses */
+  btn.addEventListener("pointerdown", (e) => e.stopPropagation());
+
+  /* show the current count on load (404 just means nobody yet) */
+  fetch(GET_URL)
+    .then((r) => (r.ok ? r.json() : { value: 0 }))
+    .then((d) => showCount(d.value ?? 0))
+    .catch(() => { label.textContent = ""; });
+
+  /* already said hi from this browser? */
+  if (localStorage.getItem(STORAGE_KEY)) markSaid();
+
+  btn.addEventListener("click", async () => {
+    if (btn.disabled) return;
+    markSaid();
+    localStorage.setItem(STORAGE_KEY, "1");
+    try {
+      const res = await fetch(HIT_URL);
+      const data = await res.json();
+      showCount(data.value);
+    } catch {
+      /* offline / API down: the click still feels acknowledged */
+    }
+  });
 })();

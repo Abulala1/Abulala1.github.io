@@ -60,6 +60,8 @@ build step — and hosted free on **GitHub Pages**. Things worth poking at:
   single click bursts into a paint-splatter particle explosion
 - **Dev-board skill game** — drag skill "ICs" into sockets on a custom dev board;
   the LCD computes a job title from the combination you build
+- **"Say hi" counter** — a live global counter on the ID card (free Abacus API,
+  one hi per visitor)
 - Typewriter intro, hand-drawn "boiling" letters, scroll-reveal, and
   `prefers-reduced-motion` support throughout
 
